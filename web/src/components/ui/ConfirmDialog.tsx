@@ -74,7 +74,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
       {children}
       {pending && (
         <div
-          className="fixed inset-0 z-[110] flex items-center justify-center bg-ink/40 p-6 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[var(--z-modal-backdrop)] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-[2px] animate-in fade-in duration-150 sm:p-6"
           role="presentation"
           onMouseDown={(event) => {
             // close only when the click started on the backdrop, not the dialog
@@ -83,7 +83,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
         >
           <div
             ref={containerRef}
-            className="w-full max-w-md border border-ink/10 bg-paper shadow-2xl animate-in slide-in-from-bottom-2 duration-200"
+            className="admin-surface w-full max-w-md rounded-lg bg-paper/95 shadow-floating animate-in slide-in-from-bottom-2 duration-200"
             role="dialog"
             aria-modal="true"
             aria-labelledby="confirm-dialog-title"

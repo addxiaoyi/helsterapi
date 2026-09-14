@@ -32,9 +32,9 @@ export function PageContainer({
   const { t } = useLang();
 
   return (
-    <div className="relative flex min-h-0 h-full flex-col gap-3 px-3 py-3 sm:px-5 md:px-6">
+    <div className="relative flex min-h-0 h-full flex-col gap-3 px-[var(--space-page)] py-3">
       {/* Header */}
-      <div className="flex flex-col items-start gap-2 border-b border-ink/10 pb-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="admin-section-header flex-col items-start pb-2 lg:flex-row lg:items-center">
         <div className="min-w-[14rem] max-w-full flex-1 flex flex-col gap-1">
           <h1 className="text-title font-bold leading-tight tracking-normal text-ink">{title}</h1>
           {subtitle && (
@@ -42,7 +42,7 @@ export function PageContainer({
           )}
         </div>
         {actions && (
-          <div className="flex w-full flex-wrap items-center justify-start gap-1.5 lg:w-auto lg:max-w-[min(100%,52rem)] lg:justify-end">
+            <div className="flex w-full flex-wrap items-center justify-start gap-1.5 lg:w-auto lg:max-w-[min(100%,52rem)] lg:justify-end">
             {Array.isArray(actions) ? (
               actions.map((action, i) => (
                 <button
@@ -51,7 +51,7 @@ export function PageContainer({
                   disabled={action.disabled}
                   onClick={action.onClick}
                   className={[
-                    "flex min-h-9 items-center gap-1.5 border px-3 py-1.5 text-caption font-medium uppercase leading-none transition-colors disabled:cursor-not-allowed",
+                    "flex min-h-9 items-center gap-1.5 rounded-md border px-3 py-1.5 text-caption font-medium uppercase leading-none transition-colors disabled:cursor-not-allowed",
                     action.variant === "primary"
                       ? "border-ink bg-ink text-paper"
                       : action.variant === "ghost"

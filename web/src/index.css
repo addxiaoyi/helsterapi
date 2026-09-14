@@ -77,6 +77,13 @@
   --shadow-floating: 0 12px 40px rgba(18, 17, 16, 0.15);
   --shadow-dock-active: 0 4px 12px rgba(18, 17, 16, 0.15);
   --shadow-tooltip: 0 8px 24px rgba(18, 17, 16, 0.12);
+
+  /* 4Router density scale: compact enough for operations work, with a
+     readable touch target floor on mobile. */
+  --space-page: clamp(0.75rem, 1.5vw, 1.5rem);
+  --space-section: clamp(0.75rem, 1.25vw, 1.25rem);
+  --control-height: 2.25rem;
+  --control-height-sm: 2rem;
 }
 
 @layer base {
@@ -134,6 +141,7 @@
     -moz-osx-font-smoothing: grayscale;
     font-weight: 450;
     line-height: 1.55;
+    min-width: 320px;
     selection:bg-ink selection:text-paper;
   }
 
@@ -288,6 +296,39 @@
     transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
   }
 
+  /* Shared form language used by admin lists and user settings. */
+  button,
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    min-height: var(--control-height);
+  }
+
+  button {
+    border-radius: 0.375rem;
+  }
+
+  [role="dialog"] button,
+  [role="menu"] button {
+    min-height: 2rem;
+  }
+
+  .admin-surface {
+    border: 1px solid var(--color-rule-soft);
+    background: color-mix(in srgb, var(--color-primary) 86%, transparent);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(12px) saturate(115%);
+  }
+
+  .admin-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    border-bottom: 1px solid var(--color-rule-soft);
+  }
+
   input:not([type="checkbox"]):not([type="radio"]),
   textarea,
   select {
@@ -322,6 +363,22 @@
   /* Tables — ensure body cells are at least 12px for legibility */
   table, th, td {
     font-size: var(--text-caption);
+  }
+
+  thead th {
+    height: 2.5rem;
+    background: color-mix(in srgb, var(--color-secondary) 82%, transparent);
+    font-size: var(--text-micro);
+    font-weight: 650;
+    letter-spacing: 0.08em;
+  }
+
+  tbody tr {
+    min-height: 2.75rem;
+  }
+
+  tbody td {
+    vertical-align: middle;
   }
 
   /* Minimalist Luxury Scrollbar */
