@@ -519,6 +519,7 @@ async function request<T>(
   path: string,
   init: RequestInit = {},
   unwrap = true,
+  retried = false,
 ): Promise<T> {
   const headers = new Headers(init.headers);
   const userId = localStorage.getItem("new-api-user-id");
@@ -526,6 +527,12 @@ async function request<T>(
     headers.set("New-Api-User", userId);
   if (init.body !== undefined && !headers.has("Content-Type"))
     headers.set("Content-Type", "application/json");
+  const method = (init.method ?? "GET").toUpperCase();
+  const mutatesSession = !["GET", "HEAD", "OPTIONS"].includes(method);
+  if (mutatesSession && !headers.has("X-CSRF-Token")) {
+    const csrf = sessionStorage.getItem("helstare-csrf-token");
+    if (csrf) headers.set("X-CSRF-Token", csrf);
+  }
 
   let response: Response;
   try {
@@ -546,13 +553,21 @@ async function request<T>(
     ApiEnvelope<T> | undefined;
   if (!payload && response.status !== 204)
     throw new ApiError(response.status, "服务返回了无法识别的响应。", response);
-  if (!response.ok)
+  if (!response.ok) {
+    const csrfMissing = response.status === 403 && /csrf token missing in (session|request header)/i.test(payload?.message ?? "");
+    if (csrfMissing && !retried && mutatesSession) {
+      const fresh = await request<{ csrf_token?: string; token?: string }>("/csrf-token", {}, true, true);
+      const token = fresh.csrf_token ?? fresh.token;
+      if (token) sessionStorage.setItem("helstare-csrf-token", token);
+      return request<T>(path, init, unwrap, true);
+    }
     throw new ApiError(
       response.status,
       payload?.message || `请求失败 (${response.status})`,
       payload,
       payload?.code,
     );
+  }
   if (payload?.success === false)
     throw new ApiError(
       response.status,
