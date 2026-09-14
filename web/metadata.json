@@ -1,0 +1,6 @@
+{
+  "name": "Creem Style System",
+  "description": "A modern, minimalist design system and component library reference for the AI Aggregator Console.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

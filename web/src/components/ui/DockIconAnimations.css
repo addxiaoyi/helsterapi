@@ -1,0 +1,116 @@
+/* ============================================================
+   Dock Icon Animations — subtle partial-element animations only.
+   No whole-icon rotation. Each animation targets a specific SVG
+   sub-element so the icon body stays still.
+   ============================================================ */
+
+/* ---- Keyframes ---- */
+
+/* Needle/indicator swings left-right */
+@keyframes needle-swing {
+  0%, 100% { transform: rotate(-15deg); }
+  50%       { transform: rotate(15deg); }
+}
+
+/* Heartbeat: scale-pulse + drop shadow */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 0px transparent); }
+  15%       { transform: scale(1.25); filter: drop-shadow(0 0 4px currentColor); }
+  30%       { transform: scale(1);    filter: drop-shadow(0 0 0px transparent); }
+  45%       { transform: scale(1.12); filter: drop-shadow(0 0 2px currentColor); }
+  60%       { transform: scale(1);    filter: drop-shadow(0 0 0px transparent); }
+}
+
+/* Vertical bob — no rotation */
+@keyframes bob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-3px); }
+}
+
+/* Slow opacity breathe — good for status dots / inner fills */
+@keyframes breathe {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 1; }
+}
+
+/* Spark twinkle */
+@keyframes twinkle {
+  0%, 100% { transform: scale(1)   rotate(0deg);   opacity: 0.6; }
+  50%       { transform: scale(1.4) rotate(20deg); opacity: 1; }
+}
+
+/* Shimmer sweep */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+  20%  { opacity: 0.6; }
+  80%  { opacity: 0.6; }
+  100% { transform: translateX(200%) skewX(-15deg); opacity: 0; }
+}
+
+/* Dot bounce */
+@keyframes dot-bounce {
+  0%, 100% { transform: translateY(0)    scale(1); }
+  25%       { transform: translateY(-4px) scale(1.3); }
+  50%       { transform: translateY(0)    scale(1); }
+  75%       { transform: translateY(-2px) scale(1.15); }
+}
+
+/* ---- Utility classes — apply to specific sub-elements only ---- */
+
+.anim-needle {
+  transform-origin: center;
+  animation: needle-swing 2s ease-in-out infinite;
+}
+
+.anim-heartbeat {
+  transform-origin: center;
+  animation: heartbeat 2.4s ease-in-out infinite;
+}
+
+.anim-bob {
+  animation: bob 2.2s ease-in-out infinite;
+}
+
+.anim-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+.anim-twinkle {
+  transform-origin: center;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.anim-dot-bounce {
+  transform-origin: center;
+  animation: dot-bounce 2s ease-in-out infinite;
+}
+
+.anim-shimmer-track {
+  overflow: hidden;
+  position: relative;
+}
+
+.anim-shimmer-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 70%
+  );
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* ---- Respect user accessibility preference ---- */
+@media (prefers-reduced-motion: reduce) {
+  .anim-needle,
+  .anim-heartbeat,
+  .anim-bob,
+  .anim-breathe,
+  .anim-twinkle,
+  .anim-dot-bounce,
+  .anim-shimmer-sweep {
+    animation: none !important;
+  }
+}

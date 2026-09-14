@@ -1,0 +1,472 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ============================================================
+ * Design Tokens — single source of truth for typography, spacing,
+ * color, motion, and elevation. Update here, propagate everywhere.
+ * ============================================================ */
+@theme {
+  --font-sans: "Manrope", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-serif: "Cormorant Garamond", "Songti SC", "Noto Serif SC", Georgia, serif;
+  --font-mono: "Space Mono", "SF Mono", Menlo, monospace;
+  --font-pixel: "Courier New", "SF Mono", monospace;
+  --default-font-weight: 450;
+  --default-font-feature-settings: "ss01", "ss02";
+
+  /* Semantic type scale — minimum 12px for legibility on small screens.
+     `caption` is the new floor for in-table / inline labels.
+     `overline` (10px) is reserved for ALL-CAPS monospace micro-labels. */
+  --text-overline: 0.625rem;    /* 10px → monospace ALL-CAPS micro-labels */
+  --text-micro: 0.6875rem;       /* 11px → used for overline micro-overline */
+  --text-caption: 0.75rem;      /* 12px — minimum body & table cell text */
+  --text-label: 0.8125rem;       /* 13px — title/label tier (text-[13px]) */
+  --text-body: 0.875rem;        /* 14px — default body */
+  --text-body-lg: 1rem;          /* 16px — emphasized body, form inputs */
+  --text-title: 1.125rem;        /* 18px */
+  --text-heading: 1.5rem;        /* 24px */
+  --text-display: 2.5rem;        /* 40px */
+
+  /* Color tokens — these generate utility classes (text-muted, bg-paper, etc.)
+     and are also available as CSS vars for use in custom CSS.
+     The `<alpha-value>` placeholder enables opacity modifiers (e.g. text-muted/60). */
+  --color-ink: #121110;                              /* primary text */
+  --color-paper: #FAFAFA;                            /* canvas */
+  --color-paper-warm: #F7F6F3;                        /* warm canvas (subtle) */
+  --color-paper-cool: #F9F8F6;                        /* cool canvas (subtle) */
+  --color-primary: #FAFAFA;                          /* brand primary canvas */
+  --color-secondary: #F7F6F3;                        /* secondary surface */
+  --color-subtle: #FAFAF9;                           /* very subtle surface */
+  --color-warm: #FAFAF6;                             /* warm subtle */
+  --color-dark: #0F0E0D;                             /* very dark surface */
+  --color-inverse: #121110;                          /* inverse surface */
+  --color-muted: #6b6862;                            /* secondary text */
+  --color-muted-soft: #9a968f;                       /* tertiary text */
+  --color-rule: #dcd8d0;                             /* dividers */
+  --color-rule-soft: #ece9e2;                        /* subtle dividers */
+  --color-danger: #B91C1C;                           /* destructive */
+  --color-success: #047857;                          /* success */
+
+  /* Helstare paper-and-ink brand layer. */
+  --brand-paper: #f0ede5;
+  --brand-ink: #2d2b26;
+  --brand-accent: #6b4f2e;
+  --brand-line: rgba(47, 43, 32, 0.28);
+  --brand-surface: rgba(255, 255, 255, 0.22);
+  --brand-surface-strong: rgba(255, 255, 255, 0.68);
+  --brand-pastel-1: #ffd1dc;
+  --brand-pastel-2: #e5d4ff;
+  --brand-pastel-3: #d1fff6;
+  --brand-pastel-4: #ffe5d9;
+
+  /* Chart palette — 8 distinguishable swatches for data-viz */
+  --chart-1: #2563EB;
+  --chart-2: #7C3AED;
+  --chart-3: #059669;
+  --chart-4: #DC2626;
+  --chart-5: #D97706;
+  --chart-6: #0891B2;
+  --chart-7: #BE185D;
+  --chart-8: #4B5563;
+
+  /* Elevation — semantic shadow tokens (replaces hardcoded rgba()) */
+  --shadow-flat: 0 1px 0 0 var(--color-rule-soft);
+  --shadow-card: 0 2px 10px rgba(18, 17, 16, 0.02);
+  --shadow-elevated: 0 4px 24px rgba(18, 17, 16, 0.02);
+  --shadow-strong: 0 8px 30px rgba(18, 17, 16, 0.04);
+  --shadow-toast: 0 8px 24px rgba(18, 17, 16, 0.12);
+  --shadow-floating: 0 12px 40px rgba(18, 17, 16, 0.15);
+  --shadow-dock-active: 0 4px 12px rgba(18, 17, 16, 0.15);
+  --shadow-tooltip: 0 8px 24px rgba(18, 17, 16, 0.12);
+}
+
+@layer base {
+  :root {
+    /* Re-declare for @layer base so they're available as CSS variables too */
+    --color-ink: #121110;
+    --color-paper: #FAFAFA;
+    --color-muted: #6B6862;
+    --color-muted-soft: #9A968F;
+    --color-rule: #DCD8D0;
+    --color-rule-soft: #ECE9E2;
+    --color-paper-warm: #F7F6F3;
+    --color-paper-cool: #F9F8F6;
+    --color-danger: #B91C1C;
+    --color-success: #047857;
+    --color-primary: #FAFAFA;
+    --color-secondary: #F7F6F3;
+    --color-subtle: #FAFAF9;
+    --color-warm: #FAFAF6;
+    --color-dark: #0F0E0D;
+    --color-inverse: #121110;
+
+    /* Chart palette aliases for SVG custom property references */
+    --chart-1: #2563EB;
+    --chart-2: #7C3AED;
+    --chart-3: #059669;
+    --chart-4: #DC2626;
+    --chart-5: #D97706;
+    --chart-6: #0891B2;
+    --chart-7: #BE185D;
+    --chart-8: #4B5563;
+
+    /* Generic semantic aliases for SVG fill/stroke references */
+    --foreground: #121110;
+    --muted-foreground: #6B6862;
+    --border: #ECE9E2;
+
+    /* z-index scale — referenced by layout / overlay components
+       so they can stay in sync with the design system. */
+    --z-banner: 10;
+    --z-header: 30;
+    --z-dock: 40;
+    --z-toast: 50;
+    --z-modal-backdrop: 80;
+    --z-modal: 90;
+    --z-palette: 100;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    @apply antialiased font-sans;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 450;
+    line-height: 1.55;
+    selection:bg-ink selection:text-paper;
+  }
+
+  :root[data-theme="dark"] {
+    --color-ink: #f4f1eb;
+    --color-paper: #171615;
+    --color-primary: #171615;
+    --color-secondary: #211f1d;
+    --color-subtle: #242220;
+    --color-warm: #27231f;
+    --color-dark: #090909;
+    --color-inverse: #f4f1eb;
+    --color-muted: #b7b0a6;
+    --color-muted-soft: #8b857d;
+    --color-rule: #3b3834;
+    --color-rule-soft: #302d2a;
+    --foreground: #f4f1eb;
+    --muted-foreground: #b7b0a6;
+    --border: #3b3834;
+    --brand-paper: #1e1d17;
+    --brand-ink: #f4f1e2;
+    --brand-accent: #cbc5a0;
+    --brand-line: rgba(244, 241, 226, 0.28);
+    --brand-surface: rgba(255, 255, 255, 0.08);
+    --brand-surface-strong: rgba(45, 43, 38, 0.68);
+  }
+
+  :root[data-theme="dark"] body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  :root[data-palette="mist"] {
+    --color-paper: #f3f7fa;
+    --color-primary: #f8fbfd;
+    --color-secondary: #e9f0f5;
+    --color-subtle: #f7fafc;
+    --color-warm: #eef5f7;
+    --color-rule: #cbd9e2;
+    --color-rule-soft: #e2ebf0;
+    --brand-paper: #e7f0f4;
+    --brand-accent: #416779;
+  }
+
+  :root[data-palette="sage"] {
+    --color-paper: #f4f7f1;
+    --color-primary: #fbfcf9;
+    --color-secondary: #eaf0e6;
+    --color-subtle: #f8faf6;
+    --color-warm: #eef4ea;
+    --color-rule: #ced9c8;
+    --color-rule-soft: #e5ece1;
+    --brand-paper: #e8f0e3;
+    --brand-accent: #58704f;
+  }
+
+  :root[data-palette="mist"] .text-\[\#121110\],
+  :root[data-palette="sage"] .text-\[\#121110\] { color: var(--color-ink); }
+  :root[data-palette="mist"] .bg-\[\#FAFAFA\],
+  :root[data-palette="sage"] .bg-\[\#FAFAFA\],
+  :root[data-palette="mist"] .bg-white,
+  :root[data-palette="sage"] .bg-white { background-color: var(--color-primary); }
+  :root[data-palette="mist"] .bg-\[\#121110\],
+  :root[data-palette="sage"] .bg-\[\#121110\] { background-color: var(--color-inverse); }
+  :root[data-palette="mist"] .border-\[\#121110\]\/10,
+  :root[data-palette="sage"] .border-\[\#121110\]\/10 { border-color: var(--color-rule-soft); }
+
+  :root[data-font="serif"] body { font-family: var(--font-serif); }
+  :root[data-font="mono"] body { font-family: var(--font-mono); }
+
+  :root[data-theme="dark"] .bg-white,
+  :root[data-theme="dark"] .bg-paper {
+    background-color: var(--color-paper);
+  }
+
+  .paper-liquid-surface {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--brand-paper);
+  }
+
+  .paper-liquid-surface::before,
+  .paper-liquid-surface::after {
+    position: absolute;
+    z-index: -1;
+    width: 62vmax;
+    height: 62vmax;
+    border-radius: 50%;
+    content: "";
+    pointer-events: none;
+    filter: blur(60px);
+    opacity: 0.32;
+    mix-blend-mode: multiply;
+    animation: paper-liquid-drift 20s ease-in-out infinite alternate;
+  }
+
+  .paper-liquid-surface::before {
+    top: -30vmax;
+    left: -25vmax;
+    background: radial-gradient(circle, var(--brand-pastel-1), transparent 68%);
+  }
+
+  .paper-liquid-surface::after {
+    right: -28vmax;
+    bottom: -35vmax;
+    background: radial-gradient(circle, var(--brand-pastel-3), transparent 68%);
+    animation-delay: -8s;
+  }
+
+  .paper-glass {
+    border: 1px solid var(--brand-line);
+    background: var(--brand-surface-strong);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.65), 0 18px 50px rgb(45 43 38 / 0.1);
+    backdrop-filter: blur(12px) saturate(125%);
+    -webkit-backdrop-filter: blur(12px) saturate(125%);
+  }
+
+  @keyframes paper-liquid-drift {
+    0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+    100% { transform: translate3d(4%, 3%, 0) scale(1.08); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .paper-liquid-surface::before,
+    .paper-liquid-surface::after { animation: none; }
+  }
+
+  /* Numeric figures — stable-width digits in tables & stats */
+  .tnum,
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  p, span, label, li, td, th, div, a, button, input, textarea, select {
+    font-weight: inherit;
+  }
+
+  /* Headings — semibold by default, never hairline */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-ink);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  input, textarea, select {
+    font-weight: 500;
+    color: var(--color-ink);
+    font-size: var(--text-body);
+    line-height: 1.5;
+    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    border-radius: 2px;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--color-ink);
+    box-shadow: 0 1px 0 0 var(--color-ink);
+  }
+
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  button {
+    font-weight: 600;
+  }
+
+  .font-pixel {
+    font-family: var(--font-pixel);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-rendering: geometricPrecision;
+  }
+
+  /* Tables — ensure body cells are at least 12px for legibility */
+  table, th, td {
+    font-size: var(--text-caption);
+  }
+
+  /* Minimalist Luxury Scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(18, 17, 16, 0.15) transparent;
+  }
+
+  /* Webkit scrollbar — Chrome / Safari / Edge */
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: rgba(18, 17, 16, 0.15);
+    border-radius: 0;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(18, 17, 16, 0.3);
+  }
+
+  /* Better focus — visible, not harsh. Only visible for keyboard focus. */
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* A sticky actions cell creates its own stacking context. Raise the whole
+     token row while its overflow menu is open so the next row cannot cover it. */
+  tr:has(.kebab-open) {
+    position: relative;
+    z-index: 60;
+  }
+
+  /* Keep every single-choice field on the same control language. The browser
+     still owns keyboard and native accessibility semantics, while the field
+     itself uses the app's compact menu treatment instead of platform chrome. */
+  select:not([multiple]) {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    padding-right: 2rem;
+    background-color: var(--color-paper);
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-ink) 50%), linear-gradient(135deg, var(--color-ink) 50%, transparent 50%);
+    background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+    background-repeat: no-repeat;
+    background-size: 5px 5px, 5px 5px;
+  }
+  select:not([multiple]):hover {
+    border-color: rgba(18, 17, 16, 0.35);
+  }
+  select:not([multiple]):disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  /* Icon-only buttons: more compact focus ring that hugs the icon */
+  button.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    color: rgba(18, 17, 16, 0.4);
+    transition: color 150ms ease-out;
+  }
+  button.icon-btn:hover {
+    color: var(--color-ink);
+  }
+  button.icon-btn:focus-visible {
+    outline: none;
+    color: var(--color-ink);
+    box-shadow: 0 0 0 2px var(--color-paper), 0 0 0 3px var(--color-ink);
+  }
+  button.icon-btn:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Respect reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Skeleton shimmer — sweeps a subtle gradient across placeholders */
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Hide scrollbar (Firefox + Webkit) but keep scrolling behavior.
+     Use for horizontally-scrollable lanes (docks, tables) where the
+     scrollbar is purely a visual affordance, not a UI control. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Common elevation utilities — reference the shadow tokens */
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .shadow-elevated { box-shadow: var(--shadow-elevated); }
+  .shadow-toast { box-shadow: var(--shadow-toast); }
+  .shadow-floating { box-shadow: var(--shadow-floating); }
+  .shadow-dock-active { box-shadow: var(--shadow-dock-active); }
+  .shadow-tooltip { box-shadow: var(--shadow-tooltip); }
+  .shadow-strong { box-shadow: var(--shadow-strong); }
+
+  /* Page-level elevation (most common in pages/Dashboard etc.) */
+  .shadow-page {
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.02);
+  }
+  .shadow-page-strong {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.02);
+  }
+  .shadow-button {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  .shadow-avatar {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+  }
+  .shadow-overlay {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  .shadow-drawer {
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15);
+  }
+}
