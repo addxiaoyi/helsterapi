@@ -9,12 +9,12 @@ type FieldRowProps = {
   children: ReactNode;
 };
 
-export function FormSection({ title, children }: { title: ReactNode; children: ReactNode }) {
-  return <section className="border-t border-[#121110]/10 pt-5"><h3 className="mb-4 text-overline font-mono uppercase tracking-widest text-muted">{title}</h3>{children}</section>;
+export function FormSection({ title, description, children }: { title: ReactNode; description?: ReactNode; children: ReactNode }) {
+  return <section className="admin-form-section"><div className="admin-form-section__heading"><h3 className="text-overline font-mono uppercase tracking-widest text-muted">{title}</h3>{description && <p className="text-micro normal-case font-sans text-muted">{description}</p>}</div>{children}</section>;
 }
 
 export function FieldRow({ label, required, help, error, children }: FieldRowProps) {
-  return <label className="block space-y-1 text-overline font-mono uppercase"><span>{label}{required && <em className="ml-1 not-italic text-danger">*</em>}</span>{children}{help && <small className="block normal-case text-micro font-sans text-muted">{help}</small>}{error && <small role="alert" className="block normal-case text-micro font-sans text-danger">{error}</small>}</label>;
+  return <label className={`admin-field ${error ? "admin-field--error" : ""}`}><span className="admin-field__label">{label}{required && <em className="ml-1 not-italic text-danger">*</em>}</span>{children}{help && <small className="admin-field__help">{help}</small>}{error && <small role="alert" className="admin-field__error">{error}</small>}</label>;
 }
 
 type JsonEditorFieldProps = {
@@ -39,7 +39,7 @@ export function JsonEditorField({ label, value, onChange, placeholder = '{"key":
 }
 
 export function AsyncSubmitButton({ busy, children }: { busy: boolean; children: ReactNode }) {
-  return <button type="submit" disabled={busy} className="bg-inverse px-5 py-2 text-overline font-mono uppercase text-white disabled:opacity-50">{busy ? "Saving..." : children}</button>;
+  return <button type="submit" disabled={busy} className="rounded-md bg-inverse px-5 py-2 text-overline font-mono uppercase text-white transition-opacity disabled:opacity-50">{busy ? "Saving..." : children}</button>;
 }
 
 export function DataSourceState({ loading, error, empty, onRetry }: { loading: boolean; error?: string | null; empty?: boolean; onRetry?: () => void }) {

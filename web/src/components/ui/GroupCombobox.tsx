@@ -58,7 +58,7 @@ export function GroupCombobox({ options, value, placeholder, onChange }: GroupCo
         <ChevronsUpDown className="h-4 w-4 shrink-0 text-muted" />
       </button>
       {open && (
-        <div role="listbox" className="absolute z-30 mt-1 max-h-72 w-full overflow-auto border border-[#121110]/15 bg-white p-1 shadow-lg">
+        <div role="listbox" className="absolute z-[var(--z-palette)] mt-1 max-h-72 w-full overflow-auto rounded-md border border-ink/15 bg-paper/95 p-1 shadow-floating backdrop-blur-xl">
           <input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索分组 / Search groups" className="mb-1 w-full border-b border-[#121110]/10 px-2 py-2 text-sm outline-none" />
           {filtered.length === 0 ? <p className="px-3 py-3 text-caption text-muted">未找到分组 / No group found.</p> : filtered.map((option) => (
             <button key={option.value} type="button" role="option" aria-selected={option.value === value} onClick={() => choose(option.value)} className="flex w-full items-start gap-2 px-3 py-2 text-left hover:bg-[#121110]/5">

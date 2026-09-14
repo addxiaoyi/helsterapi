@@ -46,7 +46,7 @@ export function SelectMenu({ value, options, onChange, ariaLabel, disabled = fal
       }} className="flex w-full items-center justify-between gap-2 border border-[#121110]/15 bg-white px-3 py-2 text-left text-caption hover:border-[#121110]/35 disabled:cursor-not-allowed disabled:opacity-50">
         <span className="truncate">{selected?.label || value}</span><ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted" />
       </button>
-      {open && <div role="listbox" className="absolute z-40 mt-1 max-h-64 w-full overflow-auto border border-[#121110]/15 bg-white p-1 shadow-lg">
+      {open && <div role="listbox" className="absolute z-[var(--z-palette)] mt-1 max-h-64 w-full overflow-auto rounded-md border border-ink/15 bg-paper/95 p-1 shadow-floating backdrop-blur-xl">
         {options.map((option, index) => <button key={option.value} type="button" role="option" aria-selected={option.value === value} onMouseEnter={() => setActiveIndex(index)} onClick={() => { onChange(option.value); setOpen(false); }} className={`flex w-full items-center gap-2 px-3 py-2 text-left text-caption hover:bg-[#121110]/5 ${activeIndex === index ? "bg-[#121110]/5" : ""}`}><Check className={`h-3.5 w-3.5 ${option.value === value ? "opacity-100" : "opacity-0"}`} />{option.label}</button>)}
       </div>}
     </div>
