@@ -45,6 +45,18 @@ const EMPTY_FORM: ChannelFormState = {
   setting: "",
 };
 
+// Keep the common channel adapters discoverable in the form. The numeric IDs
+// remain the API contract, while labels prevent operators from memorising them.
+const CHANNEL_TYPES = [
+  [1, "OpenAI"], [3, "Azure"], [4, "Ollama"], [14, "Anthropic"],
+  [15, "Baidu"], [16, "Zhipu"], [17, "Ali"], [18, "讯飞"], [20, "OpenRouter"],
+  [23, "Tencent"], [24, "Gemini"], [25, "Moonshot"], [27, "Perplexity"],
+  [34, "Cohere"], [35, "MiniMax"], [37, "Dify"], [38, "Jina"],
+  [40, "SiliconFlow"], [41, "Vertex AI"], [42, "Mistral"], [43, "DeepSeek"],
+  [45, "Volcengine"], [48, "xAI"], [49, "Coze"], [56, "Replicate"],
+  [57, "Codex"], [58, "Advanced Custom"],
+] as const;
+
 function deriveInitialForm(channel?: ApiChannel | null): ChannelFormState {
   if (!channel) return EMPTY_FORM;
   return {
@@ -108,6 +120,23 @@ export function ChannelEditorModal({
       setValidationError(t("Weight must be between 0 and 100000.", "权重必须大于 0 且不超过 100000。"));
       return;
     }
+    if (!form.name.trim()) {
+      setValidationError(t("Channel name is required.", "渠道名称不能为空。"));
+      return;
+    }
+    if (!form.models.trim()) {
+      setValidationError(t("At least one model is required.", "至少填写一个模型。"));
+      return;
+    }
+    if (form.base_url.trim()) {
+      try {
+        const url = new URL(form.base_url.trim());
+        if (!['http:', 'https:'].includes(url.protocol)) throw new Error();
+      } catch {
+        setValidationError(t("Base URL must be a valid HTTP(S) URL.", "基础地址必须是有效的 HTTP(S) 地址。"));
+        return;
+      }
+    }
     const jsonFields: Array<[keyof ChannelFormState, string]> = [
       ["model_mapping", t("Model mapping JSON", "模型映射 JSON")],
       ["param_override", t("Parameter override JSON", "参数覆盖 JSON")],
@@ -124,7 +153,14 @@ export function ChannelEditorModal({
       }
     }
     setValidationError(null);
-    await onSave(form, !editing);
+    const normalized: ChannelFormState = {
+      ...form,
+      name: form.name.trim(),
+      base_url: form.base_url.trim().replace(/\/+$/, ""),
+      models: form.models.split(",").map((item) => item.trim()).filter(Boolean).filter((item, index, all) => all.indexOf(item) === index).join(","),
+      group: form.group.split(",").map((item) => item.trim()).filter(Boolean).filter((item, index, all) => all.indexOf(item) === index).join(","),
+    };
+    await onSave(normalized, !editing);
   }
 
   const textFields: Array<{
@@ -204,17 +240,7 @@ export function ChannelEditorModal({
           ))}
           <label className="space-y-1 text-overline font-mono uppercase">
             <span>{t("Type", "类型")}</span>
-            <input
-              type="number"
-              value={form.type}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  type: Number(event.target.value),
-                }))
-              }
-              className="w-full border-b border-[#121110]/20 bg-transparent px-1 py-2 text-sm outline-none"
-            />
+            <SelectMenu value={String(form.type)} options={CHANNEL_TYPES.map(([value, label]) => ({ value: String(value), label: `${label} · ${value}` }))} onChange={(value) => setForm((current) => ({ ...current, type: Number(value) }))} ariaLabel={t("Channel type", "渠道类型")} />
           </label>
           <label className="space-y-1 text-overline font-mono uppercase">
             <span>{t("Priority", "优先级")}</span>
