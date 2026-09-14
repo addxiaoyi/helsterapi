@@ -118,6 +118,31 @@ function isReadOnlyOption(key: string) {
   return key === "CompletionRatioMeta";
 }
 
+function isSensitiveOption(key: string) {
+  return /(secret|password|private.?key|client.?secret|merchant.?key|token)/i.test(key);
+}
+
+function optionInputType(key: string, value: string): "url" | "number" | "text" {
+  if (/address|url|origin|callback|redirect/i.test(key)) return "url";
+  if (/ratio|quota|timeout|interval|limit|threshold|weight|priority|port|count|duration|retry/i.test(key) && value !== "") return "number";
+  return "text";
+}
+
+function validateOption(key: string, value: string): string | null {
+  if (isSensitiveOption(key) && value.includes("••••")) return null;
+  const type = optionInputType(key, value);
+  if (type === "number" && !Number.isFinite(Number(value))) return "必须填写有效数字。";
+  if (type === "url" && value.trim()) {
+    try {
+      const parsed = new URL(value.trim());
+      if (!['http:', 'https:'].includes(parsed.protocol)) return "必须使用 HTTP 或 HTTPS 地址。";
+    } catch {
+      return "必须填写有效的 URL。";
+    }
+  }
+  return null;
+}
+
 function classify(key: string) {
   for (const section of SECTIONS) {
     if (section.match(key)) return section.id;
@@ -170,6 +195,11 @@ export default function SystemSettings() {
 
   async function saveOption(option: Option) {
     if (baseline[option.key] === option.value) return;
+    const validationError = validateOption(option.key, option.value);
+    if (validationError) {
+      setError(`${option.key}: ${validationError}`);
+      return;
+    }
     setSavingKey(option.key);
     setSavedKey(null);
     setError(null);
@@ -440,7 +470,7 @@ export default function SystemSettings() {
               {visibleOptions.map((option) => (
                 <div
                   key={option.key}
-                  className="flex flex-col gap-3 border-b border-[#121110]/10 pb-5 md:flex-row md:items-end"
+                  className="admin-surface flex flex-col gap-3 rounded-md border-b border-[#121110]/10 p-3 pb-4 md:flex-row md:items-end"
                 >
                   {isReadOnlyOption(option.key) && (
                     <span className="text-overline font-mono uppercase text-muted">
@@ -472,6 +502,8 @@ export default function SystemSettings() {
                       />
                     ) : (
                       <input
+                        type={isSensitiveOption(option.key) ? "password" : optionInputType(option.key, option.value)}
+                        inputMode={optionInputType(option.key, option.value) === "number" ? "decimal" : undefined}
                         value={option.value}
                         readOnly={isReadOnlyOption(option.key)}
                         onChange={(event) => {
@@ -485,7 +517,7 @@ export default function SystemSettings() {
                             ),
                           );
                         }}
-                        className="w-full border-b border-[#121110]/20 bg-transparent px-1 py-2 text-label outline-none focus:border-[#121110]"
+                        className="w-full rounded-md border border-ink/15 bg-paper/70 px-3 py-2 text-label outline-none transition-colors focus:border-ink"
                       />
                     )}
                   </label>
