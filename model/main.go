@@ -287,7 +287,6 @@ func migrateDB() error {
 		&Task{},
 		&Model{},
 		&Vendor{},
-		&PrefillGroup{},
 		&Setup{},
 		&TwoFA{},
 		&TwoFABackupCode{},
@@ -308,6 +307,9 @@ func migrateDB() error {
 		&AuthzRole{},
 	)
 	if err != nil {
+		return err
+	}
+	if err := migratePrefillGroupsSafely(); err != nil {
 		return err
 	}
 	if common.UsingMainDatabase(common.DatabaseTypeSQLite) {
@@ -344,7 +346,6 @@ func migrateDBFast() error {
 		{&Task{}, "Task"},
 		{&Model{}, "Model"},
 		{&Vendor{}, "Vendor"},
-		{&PrefillGroup{}, "PrefillGroup"},
 		{&Setup{}, "Setup"},
 		{&TwoFA{}, "TwoFA"},
 		{&TwoFABackupCode{}, "TwoFABackupCode"},
@@ -385,6 +386,9 @@ func migrateDBFast() error {
 			return err
 		}
 	}
+	if err := migratePrefillGroupsSafely(); err != nil {
+		return err
+	}
 	if common.UsingMainDatabase(common.DatabaseTypeSQLite) {
 		if err := ensureSubscriptionPlanTableSQLite(); err != nil {
 			return err
@@ -396,6 +400,17 @@ func migrateDBFast() error {
 	}
 	common.SysLog("database migrated")
 	return nil
+}
+
+// Existing installations may carry legacy prefill_groups index metadata that
+// differs across GORM and PostgreSQL versions. Reconciliation can attempt to
+// drop a constraint that never existed and abort the whole service startup.
+// Preserve existing tables; normal CRUD validation already guards duplicates.
+func migratePrefillGroupsSafely() error {
+	if DB.Migrator().HasTable(&PrefillGroup{}) {
+		return nil
+	}
+	return DB.AutoMigrate(&PrefillGroup{})
 }
 
 func migrateLOGDB() error {
