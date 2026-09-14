@@ -10,6 +10,7 @@ const (
 	MsgRetryLater        = "common.retry_later"
 	MsgGenerateFailed    = "common.generate_failed"
 	MsgNotFound          = "common.not_found"
+	MsgTokenNotFound     = "token.not_found"
 	MsgUnauthorized      = "common.unauthorized"
 	MsgForbidden         = "common.forbidden"
 	MsgInvalidId         = "common.invalid_id"

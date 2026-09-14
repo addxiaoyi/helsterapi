@@ -8,14 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// LoginRateLimit implements strict rate limiting for login attempts
-// to prevent brute force attacks
-// Limits: 5 attempts per minute per IP
-func LoginRateLimit() gin.HandlerFunc {
-	// 5 attempts per 60 seconds per IP
-	return rateLimitFactory(5, 60, "LOGIN")
-}
-
 // LoginFailureTracker tracks failed login attempts and implements progressive delays
 // This is more sophisticated than simple rate limiting - it:
 // 1. Tracks failures per username (not just IP)
@@ -138,11 +130,4 @@ func CheckAccountLock() gin.HandlerFunc {
 func PasswordResetRateLimit() gin.HandlerFunc {
 	// 3 attempts per hour per IP
 	return rateLimitFactory(3, 3600, "PWD_RESET")
-}
-
-// RegisterRateLimit limits user registration
-// Prevents automated account creation
-func RegisterRateLimit() gin.HandlerFunc {
-	// 3 registrations per hour per IP
-	return rateLimitFactory(3, 3600, "REGISTER")
 }

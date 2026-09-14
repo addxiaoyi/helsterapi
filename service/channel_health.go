@@ -35,9 +35,9 @@ var channelHealth = struct {
 	items map[int]channelHealthState
 }{items: make(map[int]channelHealthState)}
 
-func RecordChannelHealthFailure(channelID int) {
+func RecordChannelHealthFailure(channelID int) bool {
 	if channelID <= 0 {
-		return
+		return false
 	}
 	channelHealth.Lock()
 	state := channelHealth.items[channelID]
@@ -45,12 +45,14 @@ func RecordChannelHealthFailure(channelID int) {
 	state.failures++
 	state.consecutiveFailures++
 	state.lastFailureAt = time.Now()
-	if state.consecutiveFailures >= channelFailureThreshold {
+	shouldDisable := state.consecutiveFailures >= channelFailureThreshold
+	if shouldDisable {
 		state.cooldownEnd = time.Now().Add(channelCooldown)
 		state.consecutiveFailures = 0
 	}
 	channelHealth.items[channelID] = state
 	channelHealth.Unlock()
+	return shouldDisable
 }
 
 func RecordChannelHealthSuccess(channelID int) {

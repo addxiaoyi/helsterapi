@@ -74,8 +74,11 @@ func (j *JSONValue) UnmarshalJSON(data []byte) error {
 }
 
 type PrefillGroup struct {
-	Id          int            `json:"id"`
-	Name        string         `json:"name" gorm:"size:64;not null;uniqueIndex:uk_prefill_name,where:deleted_at IS NULL"`
+	Id int `json:"id"`
+	// Name uniqueness is enforced by the service validation. Keeping this field
+	// free of a GORM index tag avoids dialect-specific constraint churn during
+	// startup migrations on databases created by older releases.
+	Name        string         `json:"name" gorm:"size:64;not null"`
 	Type        string         `json:"type" gorm:"size:32;index;not null"`
 	Items       JSONValue      `json:"items" gorm:"type:json"`
 	Description string         `json:"description,omitempty" gorm:"type:varchar(255)"`

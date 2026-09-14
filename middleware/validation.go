@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/QuantumNous/new-api/common"
 	"github.com/gin-gonic/gin"
-	"one-api/common"
 )
 
 // RequestSizeLimit 限制请求体大小

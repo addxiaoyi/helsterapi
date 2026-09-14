@@ -153,7 +153,10 @@ var QuotaForNewUser = 0
 var QuotaForInviter = 0
 var QuotaForInvitee = 0
 var ChannelDisableThreshold = 5.0
-var AutomaticDisableChannelEnabled = false
+
+// Automatically quarantine channels after repeated upstream failures. Manual
+// channel disabling remains a separate status and is never overwritten.
+var AutomaticDisableChannelEnabled = true
 var AutomaticEnableChannelEnabled = false
 var QuotaRemindThreshold = 1000
 var PreConsumedQuota = 500

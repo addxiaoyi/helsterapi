@@ -3,16 +3,16 @@ package controller
 // 这个文件展示如何在Controller中使用新的验证框架
 
 import (
+	"github.com/QuantumNous/new-api/common"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"one-api/common"
 )
 
 // 示例：用户注册请求结构体，使用验证标签
 type RegisterRequest struct {
-	Username string `json:"username" binding:"required,username"`           // 使用自定义username验证
-	Password string `json:"password" binding:"required,strong_password"`    // 使用强密码验证
-	Email    string `json:"email" binding:"required,email"`                 // 邮箱验证
+	Username string `json:"username" binding:"required,username"`                 // 使用自定义username验证
+	Password string `json:"password" binding:"required,strong_password"`          // 使用强密码验证
+	Email    string `json:"email" binding:"required,email"`                       // 邮箱验证
 	Nickname string `json:"nickname" binding:"required,min=2,max=50,safe_string"` // 安全字符串验证
 }
 
@@ -20,7 +20,7 @@ type RegisterRequest struct {
 type CreateChannelRequest struct {
 	Name        string   `json:"name" binding:"required,min=1,max=100,safe_string"`
 	Type        int      `json:"type" binding:"required,min=1"`
-	Key         string   `json:"key" binding:"required,api_key"`  // API密钥验证
+	Key         string   `json:"key" binding:"required,api_key"` // API密钥验证
 	BaseURL     string   `json:"base_url" binding:"omitempty,url"`
 	Models      []string `json:"models" binding:"required,min=1,dive,no_xss"` // 数组元素验证
 	Description string   `json:"description" binding:"omitempty,max=500,safe_string"`
