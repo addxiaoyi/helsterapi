@@ -163,6 +163,7 @@ export default function SystemSettings() {
   const [actionOutput, setActionOutput] = useState<unknown>(null);
   const [activeSection, setActiveSection] = useState<string>(SECTIONS[0].id);
   const [search, setSearch] = useState("");
+  const [showChangedOnly, setShowChangedOnly] = useState(false);
 
   useEffect(() => {
     const section = location.pathname.split("/")[2] || "site";
@@ -216,6 +217,33 @@ export default function SystemSettings() {
     } finally {
       setSavingKey(null);
     }
+  }
+
+  const changedOptions = options.filter((option) => baseline[option.key] !== option.value);
+
+  async function saveAll() {
+    if (changedOptions.length === 0) return;
+    setSavingKey("__all__");
+    setError(null);
+    try {
+      for (const option of changedOptions) {
+        const validationError = validateOption(option.key, option.value);
+        if (validationError) throw new Error(`${option.key}: ${validationError}`);
+        await api.updateOption(option.key, option.value);
+      }
+      setBaseline(Object.fromEntries(options.map((item) => [item.key, item.value])));
+      setSavedKey("__all__");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t("Unable to save system options.", "无法保存系统配置。"));
+    } finally {
+      setSavingKey(null);
+    }
+  }
+
+  function resetSection() {
+    const keys = new Set((grouped[activeSection] ?? []).map((item) => item.key));
+    setOptions((current) => current.map((item) => keys.has(item.key) ? { ...item, value: baseline[item.key] ?? item.value } : item));
+    setSavedKey(null);
   }
 
   async function runAction(name: string, task: () => Promise<unknown>) {
@@ -456,6 +484,17 @@ export default function SystemSettings() {
               placeholder={t("Filter by key or value", "按 key 或 value 过滤")}
               className="w-full border-b border-[#121110]/20 bg-transparent px-2 py-2 text-[12px] outline-none focus:border-[#121110] md:max-w-xs"
             />
+            <div className="flex flex-wrap items-center gap-2 text-micro">
+              <button type="button" onClick={() => setShowChangedOnly((current) => !current)} className={`rounded-md border px-3 py-2 ${showChangedOnly ? "border-ink bg-ink text-paper" : "border-ink/15 text-muted"}`}>
+                {t("Changed only", "仅显示已修改")} ({changedOptions.length})
+              </button>
+              <button type="button" onClick={resetSection} disabled={!((grouped[activeSection] ?? []).some((item) => baseline[item.key] !== item.value))} className="rounded-md border border-ink/15 px-3 py-2 text-muted disabled:opacity-40">
+                {t("Reset section", "重置本分区")}
+              </button>
+              <button type="button" onClick={() => void saveAll()} disabled={savingKey !== null || changedOptions.length === 0} className="rounded-md bg-ink px-3 py-2 text-paper disabled:opacity-40">
+                {savingKey === "__all__" ? t("Saving...", "保存中...") : t("Save all changes", "保存全部修改")}
+              </button>
+            </div>
           </div>
 
           {visibleOptions.length === 0 ? (
@@ -467,7 +506,7 @@ export default function SystemSettings() {
             </p>
           ) : (
             <div className="space-y-5">
-              {visibleOptions.map((option) => (
+              {visibleOptions.filter((option) => !showChangedOnly || baseline[option.key] !== option.value).map((option) => (
                 <div
                   key={option.key}
                   className="admin-surface flex flex-col gap-3 rounded-md border-b border-[#121110]/10 p-3 pb-4 md:flex-row md:items-end"
