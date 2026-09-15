@@ -360,7 +360,7 @@ export default function AdminLayout() {
   if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <div className="min-h-screen bg-paper flex flex-col selection:bg-ink selection:text-paper relative font-sans">
+    <div className="app-shell h-screen max-h-screen overflow-hidden bg-paper flex flex-col selection:bg-ink selection:text-paper relative font-sans">
       {/* Top Header — Editorial */}
       <header className="app-header fixed inset-x-3 top-3 z-40 flex h-14 items-center justify-between rounded-xl border border-white/70 bg-white/55 px-4 shadow-[0_10px_32px_rgba(18,17,16,0.08)] backdrop-blur-xl backdrop-saturate-150 md:inset-x-8 md:px-6">
         <div className="flex items-center gap-3">
