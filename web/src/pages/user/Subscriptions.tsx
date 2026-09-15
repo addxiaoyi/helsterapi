@@ -392,7 +392,7 @@ export default function Subscriptions() {
       error={error}
       onRetry={loadSubscriptions}
     >
-      <div className="mb-6 grid max-w-2xl gap-3 border border-[#121110]/10 bg-white p-4 sm:grid-cols-2">
+      <div className="mb-4 grid max-w-2xl gap-3 border border-[#121110]/10 bg-white p-4 sm:grid-cols-2">
         <label className="flex items-center gap-3 text-overline font-mono uppercase tracking-widest text-muted">
           {t("Payment", "支付方式")}
           <SelectMenu value={paymentMethod} onChange={setPaymentMethod} ariaLabel={t("Payment method", "支付方式")} options={[{ value: "balance", label: t("Balance", "余额") }, ...paymentMethods.map((method) => ({ value: method.type, label: method.name ?? method.type }))]} />

@@ -224,9 +224,9 @@ export default function Profile() {
       )}
     >
       {" "}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 md:gap-5">
         {" "}
-        <div className="space-y-8">
+        <div className="space-y-4">
           {" "}
           <div className="border border-[#121110]/10 bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] p-8">
             {" "}

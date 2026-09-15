@@ -495,12 +495,12 @@ export default function SecurityCenter() {
           {twoFactorError ?? securityMessage ?? dataError}
         </div>
       )}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 md:gap-5">
         {" "}
         {/* Main Security Controls */}{" "}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-4 lg:col-span-2">
           {" "}
-          <div className="bg-white border border-[#121110]/10 shadow-sm p-8">
+          <div className="ui-panel border border-[#121110]/10 bg-white p-5 shadow-sm sm:p-6">
             {" "}
             <div className="flex items-center gap-3 mb-8">
               {" "}

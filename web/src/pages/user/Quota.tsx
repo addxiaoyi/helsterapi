@@ -204,7 +204,7 @@ export default function Quota() {
         void loadGroups();
       }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 md:gap-5">
         {(billingUsage !== null || billingSubscription !== null) && (
           <div className="border border-[#121110]/10 bg-white p-5 lg:col-span-3">
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
@@ -261,9 +261,9 @@ export default function Quota() {
           </div>
         )}
         {/* Left: Balance card + stats + transfer */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Black card replica with available compute */}
-          <div className="relative overflow-hidden bg-inverse text-[#FAFAFA] p-8 aspect-[1.586/1] shadow-[0_16px_40px_rgb(0,0,0,0.15)] group">
+          <div className="relative overflow-hidden bg-inverse p-6 text-[#FAFAFA] aspect-[1.586/1] shadow-[0_16px_40px_rgb(0,0,0,0.15)] group sm:p-7">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http:/* www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.08%22/%3E%3C/svg%3E')] mix-blend-overlay pointer-events-none" />
             <div
               className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none transform translate-x-[-100%] group-hover:translate-x-[100%]"
@@ -303,7 +303,7 @@ export default function Quota() {
           </div>
 
           {/* Usage stats */}
-          <div className="border border-[#121110]/10 bg-white p-8 shadow-[0_4px_24px_rgb(0,0,0,0.02)] space-y-6">
+          <div className="ui-panel space-y-4 border border-[#121110]/10 bg-white p-5 shadow-[0_4px_24px_rgb(0,0,0,0.02)] sm:p-6">
             <div className="flex items-center justify-between">
               <h3 className="text-[12px] font-mono uppercase tracking-[0.1em] text-[#121110]">
                 {t("Consumption", "消耗概览")}
