@@ -97,6 +97,15 @@ function isMostSpecificNavItem(pathname: string, item: NavItem, items: NavItem[]
   );
 }
 
+function dockGroupLabel(id: string): string | null {
+  if (["dashboard", "playground", "keys", "logs", "usage"].includes(id)) return "核心";
+  if (["wallet", "subscriptions", "redeem"].includes(id)) return "账户";
+  if (["users", "channels", "models", "vendors", "groups"].includes(id)) return "资源";
+  if (["operations", "diagnostics", "reports", "task-records"].includes(id)) return "运行";
+  if (["system-settings", "system-auth", "system-billing", "system-content", "system-models", "system-operations", "system-security"].includes(id)) return "系统";
+  return null;
+}
+
 function DockSection({
   label,
   items,
@@ -113,12 +122,17 @@ function DockSection({
   return (
     <section className="min-w-0 px-2 py-2">
       <nav aria-label={label} className="flex min-w-0 flex-wrap items-center justify-center gap-1">
-        {items.map((item) => {
+        {items.map((item, index) => {
           const isActive = isMostSpecificNavItem(pathname, item, items);
           const Icon = item.icon;
           return (
+            <React.Fragment key={item.id}>
+            {index === 0 || dockGroupLabel(item.id) !== dockGroupLabel(items[index - 1]?.id) ? (
+              <span className="dock-group-label hidden shrink-0 px-2 font-mono text-[9px] uppercase tracking-[0.16em] text-muted/60 xl:inline">
+                {dockGroupLabel(item.id) ?? label}
+              </span>
+            ) : null}
             <motion.div
-              key={item.id}
               layout
               transition={{ type: "spring", stiffness: 500, damping: 34 }}
               className={`flex h-10 shrink-0 items-center overflow-hidden rounded-xl text-caption ${
@@ -145,6 +159,7 @@ function DockSection({
                 ) : <span className="sr-only">{item.label}</span>}
               </NavLink>
             </motion.div>
+            </React.Fragment>
           );
         })}
         {action && (

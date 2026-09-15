@@ -541,10 +541,17 @@
 
   .app-dock nav > div { border-radius: 0.5rem; }
 
+  .dock-group-label:not(:first-child) {
+    margin-left: 0.35rem;
+    border-left: 1px solid var(--color-rule-soft);
+    padding-left: 0.6rem;
+  }
+
   @media (max-width: 640px) {
     .app-header { inset-inline: 0.5rem; }
     .app-dock section { padding: 0.375rem; }
     .app-dock nav { overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; }
+    .dock-group-label { display: none; }
     main { padding-bottom: 5.5rem; }
     input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px; }
     .page-canvas { padding-inline: 0.75rem; }
