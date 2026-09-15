@@ -27,7 +27,7 @@ func SetApiRouter(router *gin.Engine) {
 	anonymousRequestBodyLimit := middleware.AnonymousRequestBodyLimit()
 	{
 		// CSRF token 获取接口 - 需要认证但不需要CSRF保护（因为这就是获取token的接口）
-		apiRouter.GET("/csrf-token", middleware.UserAuth(), controller.GetCSRFToken)
+		apiRouter.GET("/csrf-token", middleware.UserAuth(), middleware.CSRFTokenEndpoint())
 
 		apiRouter.GET("/setup", controller.GetSetup)
 		apiRouter.POST("/setup", anonymousRequestBodyLimit, controller.PostSetup)
@@ -118,7 +118,7 @@ func SetApiRouter(router *gin.Engine) {
 			userRoute.GET("/logout", controller.Logout)
 			userRoute.POST("/epay/notify", anonymousRequestBodyLimit, controller.EpayNotify)
 			userRoute.GET("/epay/notify", controller.EpayNotify)
-                        userRoute.GET("/groups", middleware.UserAuth(), controller.GetUserGroups)
+			userRoute.GET("/groups", middleware.UserAuth(), controller.GetUserGroups)
 
 			selfRoute := userRoute.Group("/")
 			selfRoute.Use(middleware.UserAuth())
