@@ -157,7 +157,7 @@ export function DataTable<T>({
   ) : null;
 
   return (
-    <div className="flex min-h-0 flex-col overflow-hidden rounded-none border border-ink/10 bg-white shadow-[0_4px_24px_rgb(0,0,0,0.04)]">
+    <div className="data-table-shell admin-surface flex min-h-0 flex-col overflow-hidden rounded-lg">
       {(onSearch || filterNodes) && (
         <div className="flex flex-col items-start justify-between gap-4 border-b border-ink/10 bg-white p-4 sm:flex-row sm:items-center">
           {onSearch && (
