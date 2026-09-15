@@ -474,6 +474,57 @@
   .data-table-shell tbody tr:hover td { background-color: color-mix(in srgb, var(--color-secondary) 45%, transparent); }
   .data-table-shell input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--color-ink); }
 
+  .ui-panel {
+    border: 1px solid var(--color-rule-soft);
+    border-radius: 0.625rem;
+    background: color-mix(in srgb, var(--color-primary) 94%, transparent);
+    box-shadow: var(--shadow-card);
+  }
+
+  .ui-panel-header {
+    display: flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--color-rule-soft);
+    padding: 0.75rem 1rem;
+  }
+
+  .ui-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--color-rule-soft);
+    padding: 0.625rem 0.75rem;
+    background: color-mix(in srgb, var(--color-secondary) 45%, transparent);
+  }
+
+  .ui-segmented {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.125rem;
+    border: 1px solid var(--color-rule-soft);
+    border-radius: 0.5rem;
+    padding: 0.125rem;
+    background: color-mix(in srgb, var(--color-secondary) 55%, transparent);
+  }
+
+  .ui-segmented > button {
+    min-height: 2rem;
+    border-radius: 0.375rem;
+    padding-inline: 0.75rem;
+    color: var(--color-muted);
+    font-size: var(--text-caption);
+  }
+
+  .ui-segmented > button[aria-selected="true"],
+  .ui-segmented > button[data-active="true"] {
+    background: var(--color-inverse);
+    color: var(--color-paper);
+  }
+
   .app-header {
     border-color: color-mix(in srgb, var(--color-ink) 12%, transparent);
     background: color-mix(in srgb, var(--color-primary) 88%, transparent);
@@ -498,6 +549,9 @@
     input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px; }
     .page-canvas { padding-inline: 0.75rem; }
     .data-table-shell { border-inline: 0; border-radius: 0.5rem; }
+    .ui-panel-header { align-items: flex-start; flex-direction: column; }
+    .ui-filter-bar { flex-wrap: nowrap; overflow-x: auto; }
+    .ui-filter-bar > * { flex: 0 0 auto; }
   }
 
   input:not([type="checkbox"]):not([type="radio"]),
