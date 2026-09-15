@@ -130,6 +130,9 @@
     --z-modal-backdrop: 80;
     --z-modal: 90;
     --z-palette: 100;
+    --z-overlay: 1000;
+    --z-dialog: 1100;
+    --z-notification: 1200;
   }
 
   body {
@@ -192,6 +195,33 @@
 
   .safe-bottom {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  /* One stacking contract for every overlay in the application. Attribute
+     selectors cover legacy pages without forcing a risky modal rewrite. */
+  [role="dialog"],
+  [aria-modal="true"] {
+    z-index: var(--z-dialog) !important;
+  }
+
+  [role="dialog"] > [role="dialog"],
+  [aria-modal="true"] > [aria-modal="true"] {
+    z-index: var(--z-dialog) !important;
+  }
+
+  [role="menu"],
+  [role="listbox"] {
+    z-index: var(--z-overlay) !important;
+  }
+
+  [role="alert"],
+  [role="status"] {
+    position: relative;
+    z-index: var(--z-notification);
+  }
+
+  .fixed.inset-0 {
+    z-index: var(--z-dialog) !important;
   }
 
   :root[data-theme="dark"] {
