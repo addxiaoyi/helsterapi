@@ -294,7 +294,7 @@ export function DataTable<T>({
                         {columns.map((column) => (
                           <td
                             key={column.key}
-                            className={`whitespace-nowrap px-4 py-3 font-sans text-caption text-ink transition-colors duration-200 ${column.key === "actions" ? "sticky right-0 z-10 border-l border-ink/10 bg-white shadow-[-8px_0_12px_rgba(18,17,16,0.04)] group-hover:bg-secondary" : ""}`}
+                            className={`whitespace-nowrap px-4 py-2.5 font-sans text-caption text-ink transition-colors duration-200 ${column.key === "actions" ? "sticky right-0 z-10 border-l border-ink/10 bg-white shadow-[-8px_0_12px_rgba(18,17,16,0.04)] group-hover:bg-secondary" : ""}`}
                           >
                             {column.render
                               ? column.render(record)
