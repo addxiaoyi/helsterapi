@@ -479,13 +479,13 @@ export default function Wallet() {
       onRetry={loadTopups}
     >
       {" "}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 md:gap-5">
         {" "}
         {/* Luxury Balance Card & Controls */}{" "}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="space-y-4 lg:col-span-2">
           {" "}
           {/* Black Card Replica */}{" "}
-          <div className="relative overflow-hidden bg-inverse text-[#FAFAFA] p-8 aspect-[1.586/1] shadow-[0_16px_40px_rgb(0,0,0,0.15)] group">
+          <div className="relative overflow-hidden bg-inverse p-6 text-[#FAFAFA] aspect-[1.586/1] shadow-[0_16px_40px_rgb(0,0,0,0.15)] group sm:p-7">
             {" "}
             {/* Holographic / Noise texture layer */}{" "}
             <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http:/* www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.08%22/%3E%3C/svg%3E')] mix-blend-overlay pointer-events-none" />{" "}
@@ -536,7 +536,7 @@ export default function Wallet() {
             </div>{" "}
           </div>{" "}
           {/* Top Up Controls */}{" "}
-          <div className="bg-white border border-[#121110]/5 p-8 space-y-8 shadow-[0_4px_24px_rgb(0,0,0,0.02)]">
+          <div className="ui-panel space-y-5 border border-[#121110]/5 bg-white p-5 shadow-[0_4px_24px_rgb(0,0,0,0.02)] sm:p-6">
             {" "}
             <div className="flex justify-between items-center">
               {" "}
@@ -601,8 +601,8 @@ export default function Wallet() {
             </button>{" "}
           </div>{" "}
         </div>{" "}
-        <div className="space-y-6 lg:col-span-1">
-          <div className="border border-[#121110]/10 bg-white p-6">
+        <div className="space-y-4 lg:col-span-1">
+          <div className="ui-panel border border-[#121110]/10 bg-white p-5">
             <h3 className="mb-3 font-serif text-lg">
               {t("Referral code", "推广码")}
             </h3>
@@ -618,7 +618,7 @@ export default function Wallet() {
           </div>
           <form
             onSubmit={transferQuotaToBalance}
-            className="border border-[#121110]/10 bg-white p-6"
+            className="ui-panel border border-[#121110]/10 bg-white p-5"
           >
             <h3 className="mb-3 font-serif text-lg">
               {t("Transfer referral quota", "转入推广额度")}
@@ -653,7 +653,7 @@ export default function Wallet() {
         {/* History Table */}{" "}
         <div className="flex flex-col lg:col-span-3">
           {" "}
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-3 flex items-center justify-between">
             {" "}
             <h3 className="text-xl font-serif text-[#121110]">
               {t("Transaction History", "交易历史")}
