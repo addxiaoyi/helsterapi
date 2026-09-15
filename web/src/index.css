@@ -320,6 +320,53 @@
     backdrop-filter: blur(12px) saturate(115%);
   }
 
+  /* Shared application chrome. These selectors intentionally target the
+     existing utility vocabulary, so older pages gain the same hierarchy
+     without replacing their data or interaction logic. */
+  .bg-white {
+    background-color: color-mix(in srgb, var(--color-primary) 94%, transparent);
+  }
+
+  [class*="border-ink/10"],
+  [class*="border-[#121110]/10"] {
+    border-color: var(--color-rule-soft);
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select,
+  button[aria-haspopup="listbox"] {
+    border-color: color-mix(in srgb, var(--color-ink) 14%, var(--color-rule));
+    background-color: color-mix(in srgb, var(--color-primary) 88%, transparent);
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):hover,
+  textarea:hover,
+  select:hover,
+  button[aria-haspopup="listbox"]:hover {
+    border-color: color-mix(in srgb, var(--color-ink) 32%, var(--color-rule));
+  }
+
+  button.bg-ink,
+  button.bg-inverse,
+  button[class*="bg-[#121110]"],
+  a.bg-ink {
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-ink) 30%, transparent);
+  }
+
+  [role="alert"] {
+    border-radius: 0.375rem;
+  }
+
+  .divide-y > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--color-rule-soft);
+  }
+
+  @media (max-width: 640px) {
+    .admin-surface { box-shadow: var(--shadow-flat); }
+    .admin-form-section { gap: 0.75rem; }
+  }
+
   .admin-section-header {
     display: flex;
     align-items: center;
