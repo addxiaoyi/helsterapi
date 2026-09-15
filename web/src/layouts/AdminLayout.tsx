@@ -183,7 +183,7 @@ function DockSurface({
       aria-label={label}
     >
       <div
-        className={`relative isolate overflow-hidden rounded-full border shadow-[0_18px_50px_rgba(18,17,16,0.18)] backdrop-blur-2xl backdrop-saturate-150 supports-[backdrop-filter]:bg-white/30 ${
+        className={`app-dock relative isolate overflow-hidden rounded-xl border shadow-[0_18px_50px_rgba(18,17,16,0.18)] backdrop-blur-2xl backdrop-saturate-150 supports-[backdrop-filter]:bg-white/30 ${
           mode === "admin"
             ? "border-ink/20 bg-ink/[0.08] ring-1 ring-white/50"
             : "border-white/70 bg-white/45 ring-1 ring-white/40"
@@ -347,7 +347,7 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-paper flex flex-col selection:bg-ink selection:text-paper relative font-sans">
       {/* Top Header — Editorial */}
-      <header className="fixed inset-x-3 top-3 z-40 flex h-14 items-center justify-between rounded-full border border-white/70 bg-white/55 px-4 shadow-[0_10px_32px_rgba(18,17,16,0.08)] backdrop-blur-xl backdrop-saturate-150 md:inset-x-8 md:px-6">
+      <header className="app-header fixed inset-x-3 top-3 z-40 flex h-14 items-center justify-between rounded-xl border border-white/70 bg-white/55 px-4 shadow-[0_10px_32px_rgba(18,17,16,0.08)] backdrop-blur-xl backdrop-saturate-150 md:inset-x-8 md:px-6">
         <div className="flex items-center gap-3">
           <div className="w-6 h-6 bg-ink flex items-center justify-center shrink-0">
             <span className="text-paper font-serif font-bold text-sm leading-none">H</span>
