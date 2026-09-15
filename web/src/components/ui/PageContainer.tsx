@@ -32,7 +32,7 @@ export function PageContainer({
   const { t } = useLang();
 
   return (
-    <div className="relative flex min-h-0 h-full flex-col gap-3 px-[var(--space-page)] py-3">
+    <div className="relative flex min-h-0 h-full flex-col gap-2 px-[var(--space-page)] py-2">
       {/* Header */}
       <div className="admin-section-header sticky top-0 z-20 -mx-[var(--space-page)] bg-paper/92 px-[var(--space-page)] py-2 backdrop-blur-xl flex-col items-start lg:flex-row lg:items-center">
         <div className="min-w-[14rem] max-w-full flex-1 flex flex-col gap-1">

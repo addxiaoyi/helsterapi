@@ -287,7 +287,7 @@ export default function Usage() {
       }
     >
       {/* ── time range selector ── */}
-      <div className="mb-6 flex items-center gap-2">
+      <div className="mb-4 flex items-center gap-2">
         <span className="mr-2 text-overline font-mono uppercase tracking-widest text-muted">
           {t("Period", "周期")}:
         </span>
@@ -308,7 +308,7 @@ export default function Usage() {
       </div>
 
       {/* ── stat summary cards ── */}
-      <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label={t("Total Quota Used", "总消耗额度")}
           value={logStats ? readNumber(logStats.quota) : "—"}
@@ -332,7 +332,7 @@ export default function Usage() {
       </div>
 
       {/* ── charts row ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="mb-5 grid grid-cols-1 gap-3 lg:grid-cols-2">
         {/* Daily quota bar chart */}
         <div className="border border-[#121110]/10 bg-white p-6">
           <div className="mb-4 flex items-center justify-between">
