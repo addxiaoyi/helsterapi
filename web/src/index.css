@@ -40,9 +40,9 @@
   --color-dark: #0F0E0D;                             /* very dark surface */
   --color-inverse: #121110;                          /* inverse surface */
   --color-muted: #6b6862;                            /* secondary text */
-  --color-muted-soft: #9a968f;                       /* tertiary text */
-  --color-rule: #dcd8d0;                             /* dividers */
-  --color-rule-soft: #ece9e2;                        /* subtle dividers */
+  --color-muted-soft: #77736c;                       /* tertiary text */
+  --color-rule: #c9c4ba;                             /* dividers */
+  --color-rule-soft: #dfdbd3;                        /* subtle dividers */
   --color-danger: #B91C1C;                           /* destructive */
   --color-success: #047857;                          /* success */
 
@@ -92,9 +92,9 @@
     --color-ink: #121110;
     --color-paper: #FAFAFA;
     --color-muted: #6B6862;
-    --color-muted-soft: #9A968F;
-    --color-rule: #DCD8D0;
-    --color-rule-soft: #ECE9E2;
+    --color-muted-soft: #77736C;
+    --color-rule: #C9C4BA;
+    --color-rule-soft: #DFDBD3;
     --color-paper-warm: #F7F6F3;
     --color-paper-cool: #F9F8F6;
     --color-danger: #B91C1C;
@@ -149,6 +149,27 @@
      short screens. */
   main {
     min-width: 0;
+    min-height: 0;
+  }
+
+  #root,
+  #root > div {
+    min-height: 100%;
+  }
+
+  /* Keep the primary page scroller obvious and usable with a physical mouse. */
+  .page-workspace {
+    scrollbar-gutter: stable;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page-workspace::-webkit-scrollbar { width: 10px; }
+  .page-workspace::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+    background-color: color-mix(in srgb, var(--color-muted) 42%, transparent);
   }
 
   button,
@@ -583,6 +604,13 @@
 
   button {
     font-weight: 600;
+    transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  }
+
+  button:not(:disabled):active { transform: translateY(1px); }
+
+  button:not(:disabled):hover {
+    border-color: color-mix(in srgb, var(--color-ink) 34%, var(--color-rule));
   }
 
   .font-pixel {
