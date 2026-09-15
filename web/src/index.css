@@ -145,6 +145,31 @@
     selection:bg-ink selection:text-paper;
   }
 
+  /* Keep fixed navigation from covering the final row or primary action on
+     short screens. */
+  main {
+    min-width: 0;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Compact, readable status surfaces used by both user and admin pages. */
+  [role="status"],
+  [role="alert"] {
+    line-height: 1.45;
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
   :root[data-theme="dark"] {
     --color-ink: #f4f1eb;
     --color-paper: #171615;
@@ -462,6 +487,8 @@
     .app-header { inset-inline: 0.5rem; }
     .app-dock section { padding: 0.375rem; }
     .app-dock nav { overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; }
+    main { padding-bottom: 5.5rem; }
+    input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px; }
   }
 
   input:not([type="checkbox"]):not([type="radio"]),
