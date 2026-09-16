@@ -593,6 +593,12 @@ export const api = {
   post: <T>(path: string, body: unknown) => json<T>("POST", path, body),
   put: <T>(path: string, body: unknown) => json<T>("PUT", path, body),
   self: () => request<ApiUser>("/user/self"),
+  csrfToken: async () => {
+    const payload = await request<{ csrf_token?: string; token?: string }>("/csrf-token");
+    const token = payload.csrf_token ?? payload.token ?? "";
+    if (token) sessionStorage.setItem("helstare-csrf-token", token);
+    return token;
+  },
   updateSelf: (body: {
     display_name?: string;
     language?: "en" | "zh";

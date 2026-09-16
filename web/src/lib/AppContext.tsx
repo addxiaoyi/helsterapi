@@ -34,6 +34,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       const currentUser = await api.self();
       setUser(currentUser);
+      void api.csrfToken().catch((error) => {
+        console.error("Unable to initialize CSRF protection", error);
+      });
       return currentUser;
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -54,12 +57,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setUser(null);
       localStorage.removeItem("new-api-user-id");
+      sessionStorage.removeItem("helstare-csrf-token");
     }
   }
 
   function acceptUser(currentUser: ApiUser) {
     setUser(currentUser);
     setIsLoading(false);
+    void api.csrfToken().catch((error) => {
+      console.error("Unable to initialize CSRF protection", error);
+    });
   }
 
   useEffect(() => {
