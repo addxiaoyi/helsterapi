@@ -182,13 +182,13 @@ export function ChannelEditorModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center overflow-y-auto bg-inverse/40 p-3 sm:p-6">
+    <div className="fixed inset-0 z-[200] flex justify-end bg-inverse/40" role="dialog" aria-modal="true" aria-labelledby="channel-editor-title">
       <form
         onSubmit={handleSubmit}
-        className="my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl space-y-5 overflow-y-auto border border-[#121110]/10 bg-primary p-4 shadow-xl sm:max-h-[calc(100dvh-3rem)] sm:p-6 md:p-8"
+        className="flex h-full w-full max-w-3xl flex-col overflow-hidden border-l border-ink/10 bg-primary shadow-drawer"
       >
-        <div className="flex items-center justify-between">
-          <h2 className="font-serif text-2xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-ink/10 px-5 py-4 sm:px-6">
+          <h2 id="channel-editor-title" className="font-serif text-2xl">
             {editing
               ? t("Edit Channel", "编辑渠道")
               : t("Add Channel", "添加渠道")}
@@ -202,6 +202,7 @@ export function ChannelEditorModal({
             ×
           </button>
         </div>
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
         {validationError && (
           <p role="alert" className="border-l-2 border-red-700 bg-red-50 px-3 py-2 text-caption text-red-700">
             {validationError}
@@ -302,7 +303,8 @@ export function ChannelEditorModal({
             </div>
           ))}
         </div>
-        <div className="sticky bottom-0 flex justify-end gap-3 border-t border-[#121110]/10 bg-primary/95 pt-4 backdrop-blur-sm">
+        </div>
+        <div className="flex shrink-0 justify-end gap-3 border-t border-ink/10 bg-primary/95 px-5 py-4 backdrop-blur-sm sm:px-6">
           <button
             type="button"
             onClick={onCancel}

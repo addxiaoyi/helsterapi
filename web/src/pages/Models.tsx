@@ -543,13 +543,13 @@ export default function Models() {
         </section>
       )}
       {editor !== undefined && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-inverse/40 p-6">
+        <div className="fixed inset-0 z-[200] flex justify-end bg-inverse/40" role="dialog" aria-modal="true" aria-labelledby="model-editor-title">
           <form
             onSubmit={saveModel}
-            className="max-h-[calc(100dvh-2rem)] w-full max-w-lg space-y-5 overflow-y-auto border border-[#121110]/10 bg-primary p-5 shadow-xl sm:max-h-[calc(100dvh-3rem)] sm:p-8"
+            className="flex h-full w-full max-w-2xl flex-col overflow-hidden border-l border-ink/10 bg-primary shadow-drawer"
           >
-            <div className="flex items-center justify-between">
-              <h2 className="font-serif text-2xl">
+            <div className="flex shrink-0 items-center justify-between border-b border-ink/10 px-5 py-4 sm:px-6">
+              <h2 id="model-editor-title" className="font-serif text-2xl">
                 {editor
                   ? t("Edit Model", "编辑模型")
                   : t("Add Model", "添加模型")}
@@ -562,6 +562,7 @@ export default function Models() {
                 ×
               </button>
             </div>
+            <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
             {formError && (
               <p role="alert" className="border-l-2 border-danger bg-red-50 px-3 py-2 text-caption text-danger">
                 {formError}
@@ -678,7 +679,8 @@ export default function Models() {
                 <SelectMenu value={String(form.sync_official)} onChange={(value) => setForm((current) => ({ ...current, sync_official: Number(value) }))} options={[{ value: "1", label: t("Enabled", "开启") }, { value: "0", label: t("Manual", "手动") }]} />
               </label>
             </div>
-            <div className="flex justify-end gap-3">
+            </div>
+            <div className="flex shrink-0 justify-end gap-3 border-t border-ink/10 bg-primary/95 px-5 py-4 backdrop-blur sm:px-6">
               <button
                 type="button"
                 onClick={() => setEditor(undefined)}
