@@ -220,7 +220,8 @@
     z-index: var(--z-notification);
   }
 
-  .fixed.inset-0 {
+  .fixed.inset-0,
+  [class*="fixed"][class*="inset-0"] {
     z-index: var(--z-dialog) !important;
   }
 

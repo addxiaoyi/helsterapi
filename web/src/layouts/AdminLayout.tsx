@@ -526,7 +526,7 @@ export default function AdminLayout() {
       </div>
 
       {/* Main Content Area */}
-      <main className="relative z-10 mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col pb-16 pt-2 md:pb-20 md:pt-3">
+      <main className="relative mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col pb-16 pt-2 md:pb-20 md:pt-3">
         <div className="flex min-h-0 w-full flex-1 flex-col p-0 sm:p-3 md:p-4">
           <Outlet />
         </div>
