@@ -35,6 +35,8 @@ import { GroupCombobox, type GroupOption } from "../components/ui/GroupCombobox"
 import { GroupBadge, StatusBadge } from "../components/ui/StatusBadge";
 import { MultiSelectMenu } from "../components/ui/MultiSelectMenu";
 import { CCSwitchDialog } from "../components/ui/CCSwitchDialog";
+import { ActionMenu } from "../components/ui/ActionMenu";
+import { TitledCard } from "../components/ui/TitledCard";
 
 const UNLIMITED_QUOTA = -1;
 const TOKEN_AUTO_GROUP = "auto";
@@ -119,8 +121,8 @@ function StatCard({
   sub?: string;
 }) {
   return (
-    <div className="flex items-start gap-3 bg-white p-5">
-      <div className="mt-0.5 rounded-none border border-[#121110]/10 p-1.5">
+    <div className="ui-panel flex items-start gap-3 p-4">
+      <div className="mt-0.5 rounded-md border border-[#121110]/10 p-1.5">
         <Icon className="h-3.5 w-3.5 text-[#121110]/40" strokeWidth={1.5} />
       </div>
       <div>
@@ -871,16 +873,19 @@ export default function Keys() {
       error={error}
       onRetry={() => void loadTokens()}
       actions={
-        <button
-          onClick={() => setCreateOpen(true)}
-          className="flex items-center gap-2 bg-inverse px-6 py-3 text-overline font-mono uppercase tracking-widest text-[#FAFAFA] disabled:opacity-50"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          {t("Mint New Token", "新建令牌")}
-        </button>
+        <div className="flex items-center gap-2">
+          <ActionMenu label={t("Token tools", "令牌工具")} items={[
+            { key: "refresh", label: t("Refresh", "刷新"), icon: <RefreshCw className="h-4 w-4" />, onSelect: () => void loadTokens() },
+            { key: "export", label: t("Export CSV", "导出 CSV"), icon: <Download className="h-4 w-4" />, disabled: tokens.length === 0, onSelect: exportTokenCsv },
+          ]} />
+          <button onClick={() => setCreateOpen(true)} className="flex min-h-9 items-center gap-2 rounded-md bg-inverse px-4 text-caption font-medium text-paper disabled:opacity-50">
+            <Plus className="h-3.5 w-3.5" />
+            {t("Mint New Token", "新建令牌")}
+          </button>
+        </div>
       }
     >
-      <div className="mb-6 grid gap-px border border-[#121110]/10 bg-[#121110]/10 sm:grid-cols-3">
+      <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <StatCard
           icon={KeyRound}
           label={t("Total tokens", "令牌总数")}
@@ -900,19 +905,12 @@ export default function Keys() {
           sub={t("Group routing options", "分组路由选项")}
         />
       </div>
-      <div className="mb-6 flex items-center justify-between border border-[#121110]/10 bg-white p-5">
-        <span className="font-mono text-[12px]">
-          {window.location.origin}/v1
-        </span>
-        <button
-          onClick={() =>
-            void navigator.clipboard.writeText(`${window.location.origin}/v1`)
-          }
-          title={t("Copy endpoint", "复制接口地址")}
-        >
+      <TitledCard title={t("API endpoint", "API 接口地址")} description={t("Use this base URL with OpenAI-compatible clients.", "在 OpenAI 兼容客户端中使用此基础地址。") } icon={<KeyRound className="h-4 w-4" />} className="mb-4" contentClassName="flex items-center justify-between gap-3 py-3">
+        <code className="min-w-0 truncate font-mono text-caption">{window.location.origin}/v1</code>
+        <button className="icon-btn h-8 w-8 shrink-0 rounded-md border border-ink/15" onClick={() => void navigator.clipboard.writeText(`${window.location.origin}/v1`)} title={t("Copy endpoint", "复制接口地址")}>
           <Copy className="h-4 w-4" />
         </button>
-      </div>
+      </TitledCard>
 
       <DataTable
         columns={columns}
@@ -950,26 +948,6 @@ export default function Keys() {
           (token as ApiToken & { _detail?: React.ReactNode })._detail
         }
       />
-
-      <div className="mt-4 flex items-center gap-3">
-        <button
-          className="flex items-center gap-2 text-overline font-mono uppercase tracking-widest text-muted hover:text-ink"
-          onClick={() => void loadTokens()}
-        >
-          <RefreshCw className="h-3.5 w-3.5" />
-          {t("Refresh", "刷新")}
-        </button>
-        {tokens.length > 0 && (
-          <button
-            className="flex items-center gap-2 text-overline font-mono uppercase tracking-widest text-muted hover:text-ink"
-            onClick={exportTokenCsv}
-            title={t("Export token audit to CSV", "导出令牌审计 CSV")}
-          >
-            <Download className="h-3.5 w-3.5" />
-            {t("Export CSV", "导出 CSV")}
-          </button>
-        )}
-      </div>
 
       {/* ── Create modal ── */}
       {createOpen && (
