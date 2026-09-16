@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Inbox, Loader2, Search, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Inbox, Loader2, Rows3, Search, X } from "lucide-react";
 import { useLang } from "../../lib/LanguageContext";
+import { useTableCompactMode } from "../../lib/useTableCompactMode";
 
 export interface Column<T> {
   key: string;
@@ -35,6 +36,7 @@ interface DataTableProps<T> {
   emptyTitle?: string;
   emptyHint?: string;
   isLoading?: boolean;
+  tableKey?: string;
 }
 
 export function DataTable<T>({
@@ -56,6 +58,7 @@ export function DataTable<T>({
   emptyTitle,
   emptyHint,
   isLoading = false,
+  tableKey,
 }: DataTableProps<T>) {
   const { t } = useLang();
   const totalPages = Math.ceil(total / pageSize) || 1;
@@ -74,6 +77,8 @@ export function DataTable<T>({
   const partialSelected =
     selectable && selectedOnPage.length > 0 && !allOnPageSelected;
   const totalSelected = (selectedIds ?? []).length;
+  const densityKey = tableKey ?? columns.map((column) => column.key).join("|");
+  const [compact, setCompact] = useTableCompactMode(densityKey);
 
   // --- Local search state with debounce so typing doesn't refetch on every keypress
   const [searchValue, setSearchValue] = useState("");
@@ -142,7 +147,7 @@ export function DataTable<T>({
   const renderedColumns = selectable ? [selectionColumn, ...columns] : columns;
 
   const headerSelectCell = selectable ? (
-    <th className="w-10 whitespace-nowrap px-4 py-5">
+    <th className={`w-10 whitespace-nowrap px-4 ${compact ? "py-2" : "py-3"}`}>
       <input
         type="checkbox"
         aria-label="select all"
@@ -158,8 +163,8 @@ export function DataTable<T>({
 
   return (
     <div className="data-table-shell ui-panel admin-surface flex min-h-0 flex-col overflow-hidden rounded-lg">
-      {(onSearch || filterNodes) && (
-        <div className="flex flex-col items-start justify-between gap-4 border-b border-ink/10 bg-white p-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col items-start justify-between gap-3 border-b border-ink/10 bg-white p-3 sm:flex-row sm:items-center">
+        <div className="flex w-full min-w-0 items-center gap-3 sm:w-auto">
           {onSearch && (
             <div className="relative w-full sm:max-w-xs">
               <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted" />
@@ -189,11 +194,17 @@ export function DataTable<T>({
               )}
             </div>
           )}
-          {filterNodes && (
-            <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">{filterNodes}</div>
-          )}
+          {!onSearch ? <span className="text-caption text-muted">{total.toLocaleString()} {t("records", "条记录")}</span> : null}
         </div>
-      )}
+        <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
+          {filterNodes && (
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:flex-none">{filterNodes}</div>
+          )}
+          <button type="button" aria-pressed={compact} onClick={() => setCompact(!compact)} title={t("Toggle compact rows", "切换紧凑行")} className={`icon-btn h-8 w-8 shrink-0 rounded-md border ${compact ? "border-ink bg-ink text-paper" : "border-ink/15"}`}>
+            <Rows3 className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
       {selectable && batchActions && batchActions.length > 0 && totalSelected > 0 && (
         <div className="flex flex-wrap items-center gap-3 border-b border-ink/10 bg-secondary px-4 py-3 text-caption font-mono">
           <span className="text-caption uppercase tracking-widest text-muted">
@@ -261,7 +272,7 @@ export function DataTable<T>({
                     {columns.map((column) => (
                       <th
                         key={column.key}
-                        className={`whitespace-nowrap px-4 py-3 text-caption font-medium uppercase tracking-widest text-muted ${column.key === "actions" ? "sticky right-0 z-10 border-l border-ink/10 bg-secondary shadow-[-8px_0_12px_rgba(18,17,16,0.04)]" : ""}`}
+                        className={`whitespace-nowrap px-4 ${compact ? "py-2" : "py-3"} text-caption font-medium uppercase tracking-widest text-muted ${column.key === "actions" ? "sticky right-0 z-10 border-l border-ink/10 bg-secondary shadow-[-8px_0_12px_rgba(18,17,16,0.04)]" : ""}`}
                       >
                         {column.title}
                       </th>
@@ -280,7 +291,7 @@ export function DataTable<T>({
                         }`}
                       >
                         {selectable && (
-                            <td className="whitespace-nowrap px-4 py-3">
+                            <td className={`whitespace-nowrap px-4 ${compact ? "py-2" : "py-3"}`}>
                             <input
                               type="checkbox"
                               aria-label="select row"
@@ -294,7 +305,7 @@ export function DataTable<T>({
                         {columns.map((column) => (
                           <td
                             key={column.key}
-                            className={`whitespace-nowrap px-4 py-2.5 font-sans text-caption text-ink transition-colors duration-200 ${column.key === "actions" ? "sticky right-0 z-10 border-l border-ink/10 bg-white shadow-[-8px_0_12px_rgba(18,17,16,0.04)] group-hover:bg-secondary" : ""}`}
+                            className={`whitespace-nowrap px-4 ${compact ? "py-2" : "py-3"} font-sans text-caption text-ink transition-colors duration-200 ${column.key === "actions" ? "sticky right-0 z-10 border-l border-ink/10 bg-white shadow-[-8px_0_12px_rgba(18,17,16,0.04)] group-hover:bg-secondary" : ""}`}
                           >
                             {column.render
                               ? column.render(record)
@@ -325,7 +336,7 @@ export function DataTable<T>({
                 return (
                   <React.Fragment key={id}>
                   <div
-                    className={`flex flex-col gap-2.5 p-3 transition-colors duration-200 hover:bg-paper/50 ${
+                    className={`flex flex-col ${compact ? "gap-1.5 p-2.5" : "gap-2.5 p-3"} transition-colors duration-200 hover:bg-paper/50 ${
                       isSelected ? "bg-paper" : ""
                     }`}
                   >
