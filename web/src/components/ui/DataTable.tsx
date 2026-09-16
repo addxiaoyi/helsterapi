@@ -83,22 +83,33 @@ export function DataTable<T>({
   // --- Local search state with debounce so typing doesn't refetch on every keypress
   const [searchValue, setSearchValue] = useState("");
   const debounceRef = useRef<number | null>(null);
+  const onSearchRef = useRef(onSearch);
+  const lastEmittedSearchRef = useRef("");
 
   useEffect(() => {
-    if (!onSearch) return;
+    onSearchRef.current = onSearch;
+  }, [onSearch]);
+
+  useEffect(() => {
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    if (!onSearchRef.current || searchValue === lastEmittedSearchRef.current) return;
     debounceRef.current = window.setTimeout(() => {
-      onSearch(searchValue);
+      lastEmittedSearchRef.current = searchValue;
+      onSearchRef.current?.(searchValue);
     }, 300);
     return () => {
       if (debounceRef.current) window.clearTimeout(debounceRef.current);
     };
-  }, [searchValue, onSearch]);
+  }, [searchValue]);
 
   const clearSearch = useCallback(() => {
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
     setSearchValue("");
-    onSearch?.("");
-  }, [onSearch]);
+    if (lastEmittedSearchRef.current !== "") {
+      lastEmittedSearchRef.current = "";
+      onSearchRef.current?.("");
+    }
+  }, []);
 
   const hasActiveSearch = searchValue.trim().length > 0;
 
