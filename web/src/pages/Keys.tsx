@@ -25,6 +25,7 @@ import {
 } from "react";
 import { DataTable } from "../components/ui/DataTable";
 import { PageContainer } from "../components/ui/PageContainer";
+import { useTableUrlState } from "../lib/useTableUrlState";
 import { api, type ApiToken, type UserGroups } from "../lib/api";
 import { useLang } from "../lib/LanguageContext";
 import { useToast } from "../components/ui/Toast";
@@ -328,8 +329,7 @@ export default function Keys() {
   const { t } = useLang();
   const toast = useToast();
   const confirm = useConfirm();
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const { page, search, setPage, setSearch } = useTableUrlState();
   const [tokens, setTokens] = useState<ApiToken[]>([]);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState<string | null>(null);

@@ -25,6 +25,7 @@ import { api, type ApiChannel } from "../lib/api";
 import { SelectMenu } from "../components/ui/SelectMenu";
 import { displayChannelName } from "../lib/channelDisplay";
 import { ActionMenu } from "../components/ui/ActionMenu";
+import { useTableUrlState } from "../lib/useTableUrlState";
 
 type ChannelRow = Omit<ApiChannel, "models" | "balance"> & {
   groups: string[];
@@ -44,8 +45,7 @@ export default function Channels() {
   const { t } = useLang();
   const toast = useToast();
   const confirm = useConfirm();
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const { page, search, setPage, setSearch } = useTableUrlState();
   const [groupFilter, setGroupFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");

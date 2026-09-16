@@ -12,6 +12,7 @@ import { ModelBadge, StatusBadge } from "../components/ui/StatusBadge";
 import { FormSection } from "../components/ui/FormFields";
 import { SelectMenu } from "../components/ui/SelectMenu";
 import { ActionMenu } from "../components/ui/ActionMenu";
+import { useTableUrlState } from "../lib/useTableUrlState";
 
 const PAGE_SIZE = 10;
 
@@ -52,8 +53,7 @@ export default function Models() {
   const confirm = useConfirm();
   const [models, setModels] = useState<ApiModel[]>([]);
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const { page, search, setPage, setSearch } = useTableUrlState();
   const [statusFilter, setStatusFilter] = useState("");
   const [syncFilter, setSyncFilter] = useState("");
   const [loading, setLoading] = useState(true);
