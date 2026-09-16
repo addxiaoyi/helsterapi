@@ -848,7 +848,7 @@ export const api = {
       payment_compliance_terms_version?: string;
     }>("/user/topup/info"),
   requestPayment: (amount: number, paymentMethod: string) =>
-    json<{ message?: string; url?: string; data?: string }>(
+    json<{ message?: string; url?: string; data?: Record<string, string> | string }>(
       "POST",
       "/user/pay",
       { amount, payment_method: paymentMethod },
@@ -933,7 +933,7 @@ export const api = {
   purchaseSubscription: (planId: number) =>
     json("POST", "/subscription/balance/pay", { plan_id: planId }),
   purchaseSubscriptionEpay: (planId: number, paymentMethod: string) =>
-    json<{ url?: string; data?: string; message?: string }>(
+    json<{ url?: string; data?: Record<string, string> | string; message?: string }>(
       "POST",
       "/subscription/epay/pay",
       { plan_id: planId, payment_method: paymentMethod },

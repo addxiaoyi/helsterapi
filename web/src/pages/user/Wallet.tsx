@@ -304,7 +304,11 @@ export default function Wallet() {
         toast.success({
           message: t("Redirecting to payment...", "正在跳转至支付页面..."),
         });
-        window.location.assign(result.url);
+        if (result.form) {
+          submitPaymentForm(result.url, result.form);
+        } else {
+          window.location.assign(result.url);
+        }
         return;
       }
       if (result.kind === "code") {
@@ -331,7 +335,7 @@ export default function Wallet() {
     method: string,
     value: number,
   ): Promise<
-    { kind: "redirect"; url?: string } | { kind: "code"; code?: string }
+    { kind: "redirect"; url?: string; form?: Record<string, string> } | { kind: "code"; code?: string }
   > {
     const lowered = method.toLowerCase();
     if (lowered === "stripe") {
@@ -391,7 +395,27 @@ export default function Wallet() {
         ),
       );
     }
-    return { kind: "redirect", url: r.url };
+    return {
+      kind: "redirect",
+      url: r.url,
+      form: typeof r.data === "object" && r.data !== null ? r.data : undefined,
+    };
+  }
+
+  function submitPaymentForm(url: string, fields: Record<string, string>) {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = url;
+    form.style.display = "none";
+    for (const [name, value] of Object.entries(fields)) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    }
+    document.body.appendChild(form);
+    form.submit();
   }
 
   const transactions: Transaction[] = topups.map((topup) => ({

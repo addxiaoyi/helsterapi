@@ -172,7 +172,7 @@ export default function Subscriptions() {
         url?: string;
         pay_link?: string;
         checkout_url?: string;
-        data?: { pay_link?: string; checkout_url?: string } | string;
+        data?: { pay_link?: string; checkout_url?: string } | Record<string, string> | string;
         message?: string;
       } | void;
       if (paymentMethod === "balance")
@@ -201,6 +201,10 @@ export default function Subscriptions() {
         toast.success({
           message: t("Redirecting to payment...", "正在跳转至支付页面..."),
         });
+        if (paymentMethod !== "balance" && typeof response?.data === "object" && response.data !== null && !("pay_link" in response.data) && !("checkout_url" in response.data)) {
+          submitPaymentForm(paymentUrl, response.data);
+          return;
+        }
         window.location.assign(paymentUrl);
       } else {
         toast.success({ message: t("Subscription updated.", "订阅已更新。") });
@@ -216,6 +220,22 @@ export default function Subscriptions() {
     } finally {
       setPurchasing(null);
     }
+  }
+
+  function submitPaymentForm(url: string, fields: Record<string, string>) {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = url;
+    form.style.display = "none";
+    for (const [name, value] of Object.entries(fields)) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    }
+    document.body.appendChild(form);
+    form.submit();
   }
   async function updateBillingPreference(
     value: "balance_first" | "subscription_first",
