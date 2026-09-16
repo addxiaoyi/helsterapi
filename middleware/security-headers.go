@@ -29,7 +29,8 @@ func SecurityHeaders() gin.HandlerFunc {
 			"img-src 'self' data: https:; " +
 			"font-src 'self' data: https://fonts.gstatic.com; " +
 			"connect-src 'self' https://challenges.cloudflare.com; " +
-			"frame-src 'self' https://challenges.cloudflare.com; " +
+			"frame-src 'self' https://challenges.cloudflare.com https://pays.1660.net.cn; " +
+			"form-action 'self' https://pays.1660.net.cn; " +
 			"frame-ancestors 'none'"
 		c.Header("Content-Security-Policy", csp)
 

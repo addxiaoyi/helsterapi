@@ -7,7 +7,7 @@ import { DataTable } from "../../components/ui/DataTable";
 import { useToast } from "../../components/ui/Toast";
 import { useConfirm } from "../../components/ui/ConfirmDialog";
 import { openPaymentComplianceGate } from "../../components/layout/PaymentComplianceGate";
-import { ScanFace, ChevronRight, Loader2 } from "lucide-react";
+import { ScanFace, ChevronRight, Loader2, X } from "lucide-react";
 import { SelectMenu } from "../../components/ui/SelectMenu";
 import { downloadCsv } from "../../lib/io";
 
@@ -36,6 +36,9 @@ type CreemProduct = {
   price?: number;
   currency?: string;
 };
+
+type EmbeddedPayment = { url: string; fields: Record<string, string> };
+const EPAY_FRAME_NAME = "helstare-epay-frame";
 
 function readNumber(value: unknown, fallback = 0) {
   const number = typeof value === "number" ? value : Number(value);
@@ -94,12 +97,32 @@ export default function Wallet() {
   >([]);
   const [selectedWaffoPayMethod, setSelectedWaffoPayMethod] = useState(0);
   const [isPaying, setIsPaying] = useState(false);
+  const [embeddedPayment, setEmbeddedPayment] = useState<EmbeddedPayment | null>(null);
   const [minTopup, setMinTopup] = useState(0);
   const [currencySymbol, setCurrencySymbol] = useState("");
   const [quotaPerUnit, setQuotaPerUnit] = useState<number>();
   const [affCode, setAffCode] = useState("");
   const [transferQuota, setTransferQuota] = useState("");
   const [transferring, setTransferring] = useState(false);
+
+  useEffect(() => {
+    if (!embeddedPayment) return;
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = embeddedPayment.url;
+    form.target = EPAY_FRAME_NAME;
+    form.style.display = "none";
+    for (const [name, value] of Object.entries(embeddedPayment.fields)) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    }
+    document.body.appendChild(form);
+    form.submit();
+    form.remove();
+  }, [embeddedPayment]);
   const loadTopups = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -286,11 +309,16 @@ export default function Wallet() {
       setError(t("No payment method is enabled.", "当前未启用支付方式。"));
       return;
     }
+    const embedsPayment = !["stripe", "creem", "waffo", "waffo-pancake", "waffo_pancake"].includes(loweredMethod);
     const confirmed = await confirm({
       title: t("Confirm payment", "确认支付"),
       description: t(
-        `Top up ${value} via ${method}? You will be redirected to the payment provider.`,
-        `将通过 ${method} 充值 ${value}。确认后将跳转至支付页面。`,
+        embedsPayment
+          ? `Top up ${value} via ${method}? The payment page will open here.`
+          : `Top up ${value} via ${method}? You will be redirected to the payment provider.`,
+        embedsPayment
+          ? `将通过 ${method} 充值 ${value}。支付页面将在当前弹窗中打开。`
+          : `将通过 ${method} 充值 ${value}。确认后将跳转至支付页面。`,
       ),
       confirmText: t("Continue to payment", "继续支付"),
       variant: "default",
@@ -305,7 +333,7 @@ export default function Wallet() {
           message: t("Redirecting to payment...", "正在跳转至支付页面..."),
         });
         if (result.form) {
-          submitPaymentForm(result.url, result.form);
+          setEmbeddedPayment({ url: result.url, fields: result.form });
         } else {
           window.location.assign(result.url);
         }
@@ -400,22 +428,6 @@ export default function Wallet() {
       url: r.url,
       form: typeof r.data === "object" && r.data !== null ? r.data : undefined,
     };
-  }
-
-  function submitPaymentForm(url: string, fields: Record<string, string>) {
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = url;
-    form.style.display = "none";
-    for (const [name, value] of Object.entries(fields)) {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = name;
-      input.value = value;
-      form.appendChild(input);
-    }
-    document.body.appendChild(form);
-    form.submit();
   }
 
   const transactions: Transaction[] = topups.map((topup) => ({
@@ -707,6 +719,22 @@ export default function Wallet() {
           </div>{" "}
         </div>{" "}
       </div>{" "}
+      {embeddedPayment && (
+        <div className="fixed inset-0 z-[var(--z-dialog)] flex items-center justify-center bg-ink/50 p-2 backdrop-blur-sm sm:p-5" role="dialog" aria-modal="true" aria-labelledby="embedded-payment-title">
+          <div className="flex h-[min(820px,calc(100dvh-1rem))] w-full max-w-4xl flex-col overflow-hidden rounded-lg border border-ink/15 bg-paper shadow-floating sm:h-[min(820px,calc(100dvh-2.5rem))]">
+            <div className="flex shrink-0 items-center justify-between border-b border-ink/10 px-4 py-3">
+              <div>
+                <h2 id="embedded-payment-title" className="text-label font-semibold text-ink">{t("Complete payment", "完成支付")}</h2>
+                <p className="text-caption text-muted">{t("Complete the payment below, then close this window.", "请在下方完成支付，完成后关闭此窗口。")}</p>
+              </div>
+              <button type="button" className="icon-btn h-9 w-9 rounded-md border border-ink/15" onClick={() => { setEmbeddedPayment(null); void loadTopups(); }} aria-label={t("Close payment", "关闭支付窗口")}>
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <iframe name={EPAY_FRAME_NAME} title={t("Payment provider", "支付页面")} className="min-h-0 flex-1 border-0 bg-white" />
+          </div>
+        </div>
+      )}
     </PageContainer>
   );
 }
