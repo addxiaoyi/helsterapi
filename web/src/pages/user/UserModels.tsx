@@ -17,7 +17,7 @@ import {
 import { PageContainer } from "../../components/ui/PageContainer";
 import { useToast } from "../../components/ui/Toast";
 import { DataTable } from "../../components/ui/DataTable";
-import { ApiError, api, type ApiStatus, type UserGroups } from "../../lib/api";
+import { ApiError, api, type ApiPricing, type ApiStatus, type UserGroups } from "../../lib/api";
 import { SelectMenu } from "../../components/ui/SelectMenu";
 
 type UserModel = {
@@ -25,23 +25,34 @@ type UserModel = {
   name: string;
   provider: string;
   price: string;
+  pricing?: ApiPricing;
   tags: string[];
   category?: string;
   enabled?: boolean;
 };
 
-function normalizeModels(models: string[]): UserModel[] {
+function normalizeModels(models: string[], pricing: ApiPricing[], groupRatio: number): UserModel[] {
+  const priceByName = new Map(pricing.map((item) => [item.model_name, item]));
   return models
     .filter((model) => model.trim().length > 0)
     .map((model) => ({
       id: model,
       name: model,
       provider: "-",
-      price: "-",
+      pricing: priceByName.get(model),
+      price: formatPricing(priceByName.get(model), groupRatio),
       tags: [],
       category: inferCategory(model),
       enabled: true,
     }));
+}
+
+function formatPricing(item: ApiPricing | undefined, groupRatio: number): string {
+  if (!item) return "未配置价格";
+  if (item.billing_mode && item.billing_mode !== "token") return `${item.billing_mode}${item.billing_expr ? ` · ${item.billing_expr}` : ""}`;
+  const input = Number(item.model_price || 0);
+  const output = Number(item.model_price || 0) * Number(item.completion_ratio || 1);
+  return `输入 ${input.toFixed(4)} / 输出 ${output.toFixed(4)} / 1K tokens · 分组 ×${groupRatio}`;
 }
 
 function inferCategory(name: string): string {
@@ -115,13 +126,14 @@ export default function UserModels() {
     setLoading(true);
     setError(null);
     try {
-      const [models, status, usableGroups] = await Promise.all([
+      const [models, status, usableGroups, pricingResponse] = await Promise.all([
         api.userModels(selectedGroup || undefined),
         api.status(),
         api.userGroups(),
+        api.pricing(),
       ]);
       setDrawingEnabled((status as ApiStatus).enable_drawing !== false);
-      setData(normalizeModels(models));
+      setData(normalizeModels(models, pricingResponse.models, Number(selectedGroup ? usableGroups[selectedGroup]?.ratio : 1) || 1));
       setGroups(usableGroups);
     } catch (cause) {
       const msg =
@@ -206,7 +218,11 @@ export default function UserModels() {
       key: "price",
       title: t("Pricing", "计费"),
       render: (r: UserModel) => (
-        <span className="font-mono text-caption text-muted">{r.price}</span>
+        <span className="block max-w-56 whitespace-normal font-mono text-caption text-muted">
+          {r.price}
+          {r.pricing?.image_ratio ? <span className="block text-micro">图片 ×{r.pricing.image_ratio}</span> : null}
+          {r.pricing?.audio_ratio ? <span className="block text-micro">音频 ×{r.pricing.audio_ratio}</span> : null}
+        </span>
       ),
     },
     {
@@ -319,7 +335,7 @@ export default function UserModels() {
       <div className="bg-white border border-[#121110]/5 shadow-[0_4px_24px_rgb(0,0,0,0.02)] flex flex-col min-h-[60vh]">
         {/* Header with model icon, search bar, and category filter */}
         <div className="p-6 border-b border-[#121110]/10">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <Box className="w-4 h-4 text-[#121110]" strokeWidth={1.5} />
               <h3 className="text-label font-medium text-[#121110]">
@@ -354,6 +370,17 @@ export default function UserModels() {
                 />
               </div>
             </div>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-caption text-muted">
+            <span className="rounded-md bg-inverse px-2.5 py-1 font-mono text-micro uppercase tracking-wider text-paper">
+              {selectedGroup || t("All usable groups", "全部可用分组")}
+            </span>
+            {selectedGroup && groups[selectedGroup] ? (
+              <span>{groups[selectedGroup].desc || t("No group description", "暂无分组介绍")} · 实际倍率 ×{groups[selectedGroup].ratio}</span>
+            ) : (
+              <span>{t("Select a group to view its effective pricing.", "选择分组后查看该分组实际生效价格。")}</span>
+            )}
+            <span className="ml-auto font-mono text-micro">{filtered.length} / {data.length} models</span>
           </div>
           {(search || category !== "all") && (
             <div className="mt-3 flex items-center gap-2 text-overline font-mono uppercase tracking-widest text-muted">
