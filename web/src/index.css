@@ -214,11 +214,7 @@
     z-index: var(--z-overlay) !important;
   }
 
-  [role="alert"],
-  [role="status"] {
-    position: relative;
-    z-index: var(--z-notification);
-  }
+  .toast-layer { z-index: var(--z-notification) !important; }
 
   .fixed.inset-0,
   [class*="fixed"][class*="inset-0"] {
