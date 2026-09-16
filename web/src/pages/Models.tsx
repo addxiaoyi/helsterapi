@@ -11,6 +11,7 @@ import { downloadCsv, downloadJson, pickFile, readFileAsText, importCsvAsRecords
 import { ModelBadge, StatusBadge } from "../components/ui/StatusBadge";
 import { FormSection } from "../components/ui/FormFields";
 import { SelectMenu } from "../components/ui/SelectMenu";
+import { ActionMenu } from "../components/ui/ActionMenu";
 
 const PAGE_SIZE = 10;
 
@@ -447,59 +448,22 @@ export default function Models() {
           <button
             type="button"
             title={t("Refresh", "刷新")}
-            className="border border-[#121110]/10 p-3"
+            className="icon-btn h-9 w-9 rounded-md border border-ink/15"
             onClick={() => window.location.reload()}
           >
             <RefreshCw className="h-3.5 w-3.5" />
           </button>
+          <ActionMenu label={t("Model tools", "模型工具")} disabled={syncing} items={[
+            { key: "preview", label: t("Preview sync", "预览同步"), icon: <RefreshCw className="h-4 w-4" />, onSelect: () => void runModelSync("preview") },
+            { key: "missing", label: t("Missing models", "缺失模型"), icon: <Eye className="h-4 w-4" />, onSelect: () => void runModelSync("missing") },
+            { key: "sync", label: t("Sync upstream", "同步上游"), icon: <RefreshCw className="h-4 w-4" />, onSelect: () => void runModelSync("sync") },
+            { key: "import", label: t("Import JSON", "导入 JSON"), icon: <Upload className="h-4 w-4" />, onSelect: importModelJson },
+            { key: "csv", label: t("Export CSV", "导出 CSV"), icon: <Download className="h-4 w-4" />, onSelect: exportModelCsv },
+            { key: "json", label: t("Export JSON", "导出 JSON"), icon: <Download className="h-4 w-4" />, onSelect: exportModelJson },
+          ]} />
           <button
             type="button"
-            disabled={syncing}
-            onClick={() => void runModelSync("preview")}
-            className="border border-[#121110]/10 px-4 py-3 text-overline font-mono uppercase disabled:opacity-50"
-          >
-            {t("Preview sync", "预览同步")}
-          </button>
-          <button
-            type="button"
-            disabled={syncing}
-            onClick={() => void runModelSync("missing")}
-            className="border border-[#121110]/10 px-4 py-3 text-overline font-mono uppercase disabled:opacity-50"
-          >
-            {t("Missing models", "缺失模型")}
-          </button>
-          <button
-            type="button"
-            disabled={syncing}
-            onClick={() => void runModelSync("sync")}
-            className="border border-[#121110]/10 px-4 py-3 text-overline font-mono uppercase disabled:opacity-50"
-          >
-            {t("Sync upstream", "同步上游")}
-          </button>
-          <button
-            type="button"
-            onClick={importModelJson}
-            className="border border-[#121110]/10 px-4 py-3 text-overline font-mono uppercase"
-          >
-            {t("Import JSON", "导入 JSON")}
-          </button>
-          <button
-            type="button"
-            onClick={exportModelCsv}
-            className="border border-[#121110]/10 px-4 py-3 text-overline font-mono uppercase"
-          >
-            {t("Export CSV", "导出 CSV")}
-          </button>
-          <button
-            type="button"
-            onClick={exportModelJson}
-            className="border border-[#121110]/10 px-4 py-3 text-overline font-mono uppercase"
-          >
-            {t("Export JSON", "导出 JSON")}
-          </button>
-          <button
-            type="button"
-            className="flex items-center gap-2 bg-inverse px-6 py-3 text-overline font-mono uppercase tracking-widest text-white"
+            className="flex min-h-9 items-center gap-2 rounded-md bg-inverse px-4 text-caption font-medium text-paper"
             onClick={() => openEditor()}
           >
             <Plus className="h-3.5 w-3.5" />

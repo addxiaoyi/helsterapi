@@ -24,6 +24,7 @@ import {
 import { api, type ApiChannel } from "../lib/api";
 import { SelectMenu } from "../components/ui/SelectMenu";
 import { displayChannelName } from "../lib/channelDisplay";
+import { ActionMenu } from "../components/ui/ActionMenu";
 
 type ChannelRow = Omit<ApiChannel, "models" | "balance"> & {
   groups: string[];
@@ -1064,83 +1065,19 @@ export default function Channels() {
         "配置上游模型供应商、管理分组标签与负载均衡。",
       )}
       actions={
-        <div className="flex flex-wrap items-center gap-2">
-          {" "}
-          <button
-            className="flex items-center gap-2 bg-transparent border border-[#121110]/10 text-[#121110] px-4 py-3 text-overline font-mono uppercase tracking-widest hover:border-[#121110]/30 hover:bg-white transition-all duration-300 rounded-none shadow-sm active:scale-[0.98] ease-out-expo"
-            disabled={isOperating}
-            onClick={() => void testAllChannels()}
-          >
-            {" "}
-            <Activity className="w-3.5 h-3.5 stroke-[1.5]" />{" "}
-            <span className="hidden sm:inline">
-              {t("Test All", "测试所有")}
-            </span>{" "}
-          </button>{" "}
-          <button
-            className="flex items-center gap-2 bg-transparent border border-[#121110]/10 text-[#121110] px-4 py-3 text-overline font-mono uppercase tracking-widest hover:border-[#121110]/30 hover:bg-white transition-all duration-300 rounded-none shadow-sm active:scale-[0.98] ease-out-expo"
-            disabled={isOperating}
-            onClick={() => void updateAllBalances()}
-          >
-            {" "}
-            <RefreshCw className="w-3.5 h-3.5 stroke-[1.5]" />{" "}
-            <span className="hidden sm:inline">
-              {t("Update Balances", "更新余额")}
-            </span>{" "}
-          </button>{" "}
-          <button
-            className="flex items-center gap-2 bg-transparent border border-red-700/30 text-red-700 px-4 py-3 text-overline font-mono uppercase tracking-widest hover:bg-red-50 transition-all duration-300 rounded-none shadow-sm active:scale-[0.98] ease-out-expo"
-            disabled={isOperating}
-            onClick={() => void deleteDisabledChannels()}
-          >
-            <Trash2 className="w-3.5 h-3.5 stroke-[1.5]" />
-            <span className="hidden sm:inline">
-              {t("Clear disabled", "清理禁用")}
-            </span>
-          </button>{" "}
-          <button
-            className="flex items-center gap-2 bg-transparent border border-[#121110]/10 text-[#121110] px-4 py-3 text-overline font-mono uppercase tracking-widest hover:border-[#121110]/30 hover:bg-white transition-all duration-300 rounded-none shadow-sm active:scale-[0.98] ease-out-expo"
-            disabled={isOperating}
-            onClick={() => void detectUpstreamUpdates()}
-          >
-            <Network className="w-3.5 h-3.5 stroke-[1.5]" />
-            <span className="hidden sm:inline">
-              {t("Check upstream", "检查上游")}
-            </span>
-          </button>{" "}
-          <button
-            className="flex items-center gap-2 bg-transparent border border-[#121110]/10 text-[#121110] px-4 py-3 text-overline font-mono uppercase tracking-widest hover:border-[#121110]/30 hover:bg-white transition-all duration-300 rounded-none shadow-sm active:scale-[0.98] ease-out-expo"
-            disabled={isOperating}
-            onClick={() => void applyAllUpstreamUpdates()}
-          >
-            <RefreshCw className="w-3.5 h-3.5 stroke-[1.5]" />
-            <span className="hidden sm:inline">
-              {t("Apply upstream", "应用上游")}
-            </span>
-          </button>{" "}
-          <button
-            className="flex items-center gap-2 bg-transparent border border-[#121110]/10 text-[#121110] px-4 py-3 text-overline font-mono uppercase tracking-widest hover:border-[#121110]/30 hover:bg-white transition-all duration-300 rounded-none shadow-sm active:scale-[0.98] ease-out-expo"
-            disabled={isOperating}
-            onClick={() => void loadTagModels()}
-          >
-            <Activity className="w-3.5 h-3.5 stroke-[1.5]" />
-            <span className="hidden sm:inline">
-              {t("Tag models", "标签模型")}
-            </span>
-          </button>{" "}
-          <button
-            className="flex items-center gap-2 bg-transparent border border-[#121110]/10 text-[#121110] px-4 py-3 text-overline font-mono uppercase tracking-widest hover:border-[#121110]/30 hover:bg-white transition-all duration-300 rounded-none shadow-sm active:scale-[0.98] ease-out-expo"
-            disabled={isOperating}
-            onClick={() => void fixChannelAbilities()}
-          >
-            <AlertTriangle className="w-3.5 h-3.5 stroke-[1.5]" />
-            <span className="hidden sm:inline">
-              {t("Fix abilities", "修复能力")}
-            </span>
-          </button>{" "}
+        <div className="flex items-center gap-2">
+          <ActionMenu label={t("Channel tools", "渠道工具")} disabled={isOperating} items={[
+            { key: "test", label: t("Test all", "测试所有"), icon: <Activity className="h-4 w-4" />, onSelect: () => void testAllChannels() },
+            { key: "balance", label: t("Update balances", "更新余额"), icon: <RefreshCw className="h-4 w-4" />, onSelect: () => void updateAllBalances() },
+            { key: "detect", label: t("Check upstream", "检查上游"), icon: <Network className="h-4 w-4" />, onSelect: () => void detectUpstreamUpdates() },
+            { key: "apply", label: t("Apply upstream", "应用上游"), icon: <RefreshCw className="h-4 w-4" />, onSelect: () => void applyAllUpstreamUpdates() },
+            { key: "tags", label: t("Tag models", "标签模型"), icon: <Activity className="h-4 w-4" />, onSelect: () => void loadTagModels() },
+            { key: "abilities", label: t("Fix abilities", "修复能力"), icon: <AlertTriangle className="h-4 w-4" />, onSelect: () => void fixChannelAbilities() },
+            { key: "clear", label: t("Clear disabled", "清理禁用"), icon: <Trash2 className="h-4 w-4" />, danger: true, onSelect: () => void deleteDisabledChannels() },
+          ]} />
           <button
             onClick={() => openEditor()}
-            className="flex items-center gap-2 bg-inverse text-[#FAFAFA] px-6 py-3 text-overline font-mono uppercase tracking-widest rounded-none shadow-sm"
+            className="flex min-h-9 items-center gap-2 rounded-md bg-inverse px-4 text-caption font-medium text-paper shadow-sm"
           >
             {" "}
             <Plus className="w-3.5 h-3.5 stroke-[1.5]" />{" "}
