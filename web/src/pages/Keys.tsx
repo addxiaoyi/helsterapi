@@ -973,11 +973,13 @@ export default function Keys() {
 
       {/* ── Create modal ── */}
       {createOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-inverse/40 p-6">
-          <div className="relative max-h-[calc(100dvh-2rem)] w-full max-w-md space-y-5 overflow-y-auto border border-[#121110]/10 bg-primary p-5 shadow-xl sm:max-h-[calc(100dvh-3rem)] sm:p-8">
-            <div className="flex items-center justify-between">
+        <div className="fixed inset-0 z-[200] flex justify-end bg-inverse/40" role="dialog" aria-modal="true" aria-labelledby="create-token-title">
+          <div className="relative flex h-full w-full max-w-xl flex-col overflow-hidden border-l border-ink/10 bg-primary shadow-drawer">
+            <div className="flex shrink-0 items-center justify-between border-b border-ink/10 px-5 py-4 sm:px-6">
               <h2 className="font-serif text-2xl">
+                <span id="create-token-title">
                 {t("Mint New Token", "新建令牌")}
+                </span>
               </h2>
               <button
                 type="button"
@@ -987,7 +989,8 @@ export default function Keys() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <form onSubmit={createToken} className="space-y-5">
+            <form onSubmit={createToken} className="flex min-h-0 flex-1 flex-col">
+              <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
               <label className="block space-y-2 text-overline font-mono uppercase tracking-widest">
                 <span>{t("Token name", "令牌名称")}</span>
                 <input
@@ -1042,7 +1045,8 @@ export default function Keys() {
                 />
                 {t("Cross-group retry", "跨分组重试")}
               </label>
-              <div className="flex justify-end gap-3">
+              </div>
+              <div className="flex shrink-0 justify-end gap-3 border-t border-ink/10 bg-primary/95 px-5 py-4 backdrop-blur sm:px-6">
                 <button
                   type="button"
                   onClick={() => setCreateOpen(false)}
@@ -1067,11 +1071,13 @@ export default function Keys() {
 
       {/* ── Edit modal ── */}
       {editing && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-inverse/40 p-6">
-          <div className="relative max-h-[calc(100dvh-2rem)] w-full max-w-md space-y-5 overflow-y-auto border border-[#121110]/10 bg-primary p-5 shadow-xl sm:max-h-[calc(100dvh-3rem)] sm:p-8">
-            <div className="flex items-center justify-between">
+        <div className="fixed inset-0 z-[200] flex justify-end bg-inverse/40" role="dialog" aria-modal="true" aria-labelledby="edit-token-title">
+          <div className="relative flex h-full w-full max-w-xl flex-col overflow-hidden border-l border-ink/10 bg-primary shadow-drawer">
+            <div className="flex shrink-0 items-center justify-between border-b border-ink/10 px-5 py-4 sm:px-6">
               <h2 className="font-serif text-2xl">
+                <span id="edit-token-title">
                 {t("Edit Token", "编辑令牌")}
+                </span>
               </h2>
               <button
                 type="button"
@@ -1081,7 +1087,8 @@ export default function Keys() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <form onSubmit={saveToken} className="space-y-5">
+            <form onSubmit={saveToken} className="flex min-h-0 flex-1 flex-col">
+              <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
               <input
                 required
                 maxLength={MAX_TOKEN_NAME_LENGTH}
@@ -1156,7 +1163,8 @@ export default function Keys() {
                 className="w-full border-b border-[#121110]/20 bg-transparent px-1 py-2 text-sm outline-none"
                 placeholder={t("Expiry timestamp", "过期时间戳")}
               />
-              <div className="flex justify-end gap-3">
+              </div>
+              <div className="flex shrink-0 justify-end gap-3 border-t border-ink/10 bg-primary/95 px-5 py-4 backdrop-blur sm:px-6">
                 <button
                   type="button"
                   onClick={() => setEditing(null)}
