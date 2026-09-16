@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { useLang } from "../../lib/LanguageContext";
 import { RefreshCw } from "lucide-react";
+import { PageTransition } from "./PageTransition";
 
 type Action = {
   label: string;
@@ -74,7 +75,7 @@ export function PageContainer({
 
       {/* Content */}
       <div className="page-workspace flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden pb-4 sm:pb-5">
-        <div className="page-canvas w-full max-w-[1600px] flex-1 self-center">
+        <PageTransition className="page-canvas w-full max-w-[1600px] flex-1 self-center">
         {error ? (
           <div className="flex min-h-64 flex-1 flex-col items-center justify-center gap-3 px-4 text-center">
             <p className="text-caption text-danger">{error}</p>
@@ -92,7 +93,7 @@ export function PageContainer({
         ) : (
           children
         )}
-        </div>
+        </PageTransition>
       </div>
 
       {/* Loading overlay */}

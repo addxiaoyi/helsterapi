@@ -7,6 +7,8 @@ import { useToast } from "../components/ui/Toast";
 import { api, type ApiChannel, type ApiPerfMetricSummary } from "../lib/api";
 import { useApp } from "../lib/AppContext";
 import { BarChart, DonutChart, HorizontalBarChart, LineChart, type ChartSeries } from "../components/charts";
+import { TitledCard } from "../components/ui/TitledCard";
+import { StaggerGrid, StaggerItem } from "../components/ui/PageTransition";
 
 const DAY_SECONDS = 24 * 60 * 60;
 const DASHBOARD_CHANNEL_PAGE_SIZE = 100;
@@ -248,43 +250,29 @@ export default function Dashboard() {
       onRetry={loadDashboard}
     >
       {/* Metric cards use only values returned by the gateway. */}
-      <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <StaggerGrid className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-5">
         {cards.map(([label, value, Icon, spark, color]) => (
-          <div
-            key={label as string}
-            className="group relative overflow-hidden border-b border-ink/10 bg-paper/60 p-5 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-paper"
-          >
-            <span className="absolute inset-y-0 left-0 w-0.5" style={{ backgroundColor: color }} aria-hidden="true" />
-            <div className="mb-3 flex items-start justify-between">
-              <Icon className="h-4 w-4 text-muted" />
+          <StaggerItem key={label as string}>
+            <div className="ui-panel group relative overflow-hidden p-4 transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-paper">
+              <span className="absolute inset-y-0 left-0 w-0.5" style={{ backgroundColor: color }} aria-hidden="true" />
+              <div className="mb-2 flex items-start justify-between">
+                <Icon className="h-4 w-4 text-muted" />
+              </div>
+              <p className="mb-1 text-overline font-mono uppercase tracking-[0.15em] text-muted">{label}</p>
+              <p className="font-pixel text-3xl tracking-tight text-ink">{isLoading ? "—" : (value as number).toLocaleString()}</p>
             </div>
-            <p className="mb-1 text-overline font-mono uppercase tracking-[0.15em] text-muted">
-              {label}
-            </p>
-            <p className="font-pixel text-3xl tracking-tight text-ink md:text-4xl">
-              {isLoading ? "—" : (value as number).toLocaleString()}
-            </p>
-          </div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerGrid>
 
       {/* Charts row: latency line + channel donut + requests bar */}
-      <div className="mb-8 grid grid-cols-1 gap-5">
-        <div className="flex min-h-[220px] flex-col border border-ink/10 bg-paper/50 p-6">
-          <h3 className="mb-4 text-overline font-mono uppercase tracking-widest text-ink">
-            {t("Top model requests", "头部模型请求数")}
-          </h3>
+      <div className="mb-5 grid grid-cols-1 gap-3 xl:grid-cols-2">
+        <TitledCard title={t("Top model requests", "头部模型请求数")} description={t("Request count per model (top 5)", "各模型请求数 (前 5)")} icon={<Activity className="h-4 w-4" />} className="min-h-[250px]" contentClassName="flex min-h-[190px] flex-col">
           <div className="flex flex-1 items-center">
             <BarChart data={requestsBarData} height={180} formatY={(v) => `${v}`} />
           </div>
-          <p className="mt-3 text-micro text-muted">
-            {t("Request count per model (top 5)", "各模型请求数 (前 5)")}
-          </p>
-        </div>
-        <div className="flex min-h-[280px] flex-col border border-ink/10 bg-paper/50 p-6">
-          <h3 className="mb-4 text-overline font-mono uppercase tracking-widest text-ink">
-            {t("Channel status", "渠道状态")}
-          </h3>
+        </TitledCard>
+        <TitledCard title={t("Channel status", "渠道状态")} description={t("Enabled, degraded and disabled channels.", "已启用、降级和停用渠道。") } icon={<Database className="h-4 w-4" />} className="min-h-[250px]">
           <div className="flex flex-1 flex-col justify-center">
             <div className="mb-6 flex h-3 overflow-hidden bg-ink/5" aria-label={t("Channel status distribution", "渠道状态分布")}>
               {channelStatusRows.map((row) => (
@@ -308,20 +296,13 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
-        </div>
-        <div className="flex min-h-[280px] flex-col border border-ink/10 bg-paper/50 p-6">
-          <h3 className="mb-4 text-overline font-mono uppercase tracking-widest text-ink">
-            {t("Channel distribution", "渠道分布")}
-          </h3>
+        </TitledCard>
+        <TitledCard title={t("Channel distribution", "渠道分布")} icon={<Database className="h-4 w-4" />} className="min-h-[250px]">
           <div className="flex flex-1 items-center justify-center">
             <DonutChart segments={channelDist} size={170} thickness={28} />
           </div>
-          <p className="mt-3 text-micro text-muted">{t("Enabled, degraded and disabled channels.", "已启用、降级和停用渠道。")}</p>
-        </div>
-        <div className="flex min-h-[280px] flex-col border border-ink/10 bg-paper/50 p-6">
-          <h3 className="mb-4 text-overline font-mono uppercase tracking-widest text-ink">
-            {t("Performance trend", "性能趋势")}
-          </h3>
+        </TitledCard>
+        <TitledCard title={t("Performance trend", "性能趋势")} icon={<Zap className="h-4 w-4" />} className="min-h-[250px]">
           <div className="flex flex-1 items-center">
             <LineChart
               series={trendSeries}
@@ -331,19 +312,15 @@ export default function Dashboard() {
               showDots
             />
           </div>
-        </div>
+        </TitledCard>
       </div>
 
-      <div className="mb-8 border-y border-ink/10 bg-paper/50 p-8">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h3 className="text-overline font-mono uppercase tracking-widest text-ink">
-              {t(`Latency by model (${performanceWindowLabel})`, `模型平均延迟（${performanceWindowLabel}）`)}
-            </h3>
-            <p className="mt-2 text-micro text-muted">
-              {t("Average total request latency from recorded gateway samples.", "来自网关记录样本的平均请求总耗时。")}
-            </p>
-          </div>
+      <TitledCard
+        title={t(`Latency by model (${performanceWindowLabel})`, `模型平均延迟（${performanceWindowLabel}）`)}
+        description={t("Average total request latency from recorded gateway samples.", "来自网关记录样本的平均请求总耗时。")}
+        icon={<Activity className="h-4 w-4" />}
+        className="mb-5"
+        action={
           <div className="flex items-center gap-1" role="group" aria-label={t("Performance time range", "性能时间范围")}>
             {([24, 72, 168] as const).map((hours) => (
               <button
@@ -356,6 +333,9 @@ export default function Dashboard() {
               </button>
             ))}
           </div>
+        }
+      >
+        <div className="mb-4 flex justify-end">
           <input
             value={performanceSearch}
             onChange={(event) => setPerformanceSearch(event.target.value)}
@@ -364,7 +344,7 @@ export default function Dashboard() {
             className="w-full max-w-xs border-b border-ink/20 bg-transparent px-1 py-2 text-caption outline-none focus:border-ink"
           />
         </div>
-        <div className="grid gap-6 xl:grid-cols-2">
+        <div className="grid gap-4 xl:grid-cols-2">
           <div>
             <p className="mb-3 text-micro font-mono uppercase tracking-widest text-muted">{t("Average latency", "平均延迟")} · ms</p>
             <HorizontalBarChart data={performanceChartData} height={Math.max(180, performanceChartData.length * 38)} formatValue={(value) => `${Math.round(value)} ms`} />
@@ -374,18 +354,15 @@ export default function Dashboard() {
             <HorizontalBarChart data={successChartData} height={Math.max(180, successChartData.length * 38)} formatValue={(value) => `${value.toFixed(1)}%`} />
           </div>
         </div>
-      </div>
+      </TitledCard>
 
       {/* Model availability */}
-      <div className="mb-8 border-y border-ink/10 bg-paper/50 p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-overline font-mono uppercase tracking-widest text-ink">
-            {t("Model Availability", "模型可用性")}
-          </h3>
-          <span className="text-caption font-mono text-muted">
-            {modelCount} {t("unique models", "个模型")}
-          </span>
-        </div>
+      <TitledCard
+        title={t("Model Availability", "模型可用性")}
+        description={`${modelCount} ${t("unique models", "个模型")}`}
+        icon={<Cpu className="h-4 w-4" />}
+        className="mb-5"
+      >
         {Object.keys(modelsByChannel).length === 0 ? (
           <p className="py-8 text-center text-caption text-muted">
             {modelCount > 0
@@ -461,18 +438,14 @@ export default function Dashboard() {
             })}
           </div>
         )}
-      </div>
+      </TitledCard>
 
       {/* Performance table */}
-      <div className="border-y border-ink/10 bg-paper/50 p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-overline font-mono uppercase tracking-widest text-ink">
-            {t(`Model Performance (${performanceWindowLabel})`, `模型性能（${performanceWindowLabel}）`)}
-          </h3>
-          <span className="text-caption font-mono text-muted">
-            {visiblePerformance.length} {t("models", "个模型")}
-          </span>
-        </div>
+      <TitledCard
+        title={t(`Model Performance (${performanceWindowLabel})`, `模型性能（${performanceWindowLabel}）`)}
+        description={`${visiblePerformance.length} ${t("models", "个模型")}`}
+        icon={<Zap className="h-4 w-4" />}
+      >
         {performance.length === 0 ? (
           <p className="py-8 text-center text-caption text-muted">
             {t("No performance data available.", "暂无性能数据。")}
@@ -524,7 +497,7 @@ export default function Dashboard() {
             </table>
           </div>
         )}
-      </div>
+      </TitledCard>
     </PageContainer>
   );
 }
